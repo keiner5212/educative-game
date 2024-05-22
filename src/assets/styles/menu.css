@@ -1,0 +1,54 @@
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+
+    & button {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+}
+
+.menu-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100vw;
+
+    z-index: 10;
+}
+
+.menu-title {
+    font-size: 4rem;
+    font-weight: bold;
+    transform: rotate(-11deg);
+    -webkit-transform: rotate(-11deg);
+    -moz-transform: rotate(-11deg);
+    -ms-transform: rotate(-11deg);
+    -o-transform: rotate(-11deg);
+}
+
+.menu-img {
+    position: absolute;
+    width: 200px;
+    transform: rotate(11deg) translateX(250px);
+    -webkit-transform: rotate(11deg) translateX(250px);
+    -moz-transform: rotate(11deg) translateX(250px);
+    -ms-transform: rotate(11deg) translateX(250px);
+    -o-transform: rotate(11deg) translateX(250px);
+}
+
+.game-camvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}

@@ -2,14 +2,18 @@ import MobileDetect from 'mobile-detect';
 
 export function closeModal() {
     document.querySelector('.modal')?.classList.remove('is-active');
+    document.querySelector('.modal')?.classList.add('is-closing');
+    removeModal();
 }
 
 export function closeModalXButton() {
-    document.location.href="https://github.com/keiner5212/educative-game.git"
+    document.location.href = "https://github.com/keiner5212/educative-game.git"
 }
 
 function removeModal() {
-    document.querySelector('.modal')?.remove();
+    setTimeout(() => {
+        document.querySelector('.modal')?.remove();
+    }, 500);
 }
 
 export function openModal() {
@@ -19,13 +23,11 @@ export function openModal() {
 export function accept(accept: any) {
     accept();
     closeModal();
-    removeModal();
 }
 
 export function decline(decline: any) {
     decline();
     closeModal();
-    removeModal();
 }
 
 export function IsMobile() {
@@ -34,4 +36,8 @@ export function IsMobile() {
         return true
     }
     return false
+}
+
+export function removeBackground() {
+    document.getElementById('animated-background')?.remove();
 }
