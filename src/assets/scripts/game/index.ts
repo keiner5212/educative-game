@@ -1,9 +1,22 @@
 import { Application, Sprite, Assets } from 'pixi.js';
 import backgroundImg from "../../img/background.png"
+//sprites
+
+//quiet
 import characterImg1 from "../../img/animations/estatico o off/esposo estatico1.png"
 import characterImg2 from "../../img/animations/estatico o off/esposo estatico2.png"
 import characterImg3 from "../../img/animations/estatico o off/esposo estatico3.png"
 import characterImg4 from "../../img/animations/estatico o off/esposo estatico4.png"
+
+//walk
+import WcharacterImg1 from "../../img/animations/caminando/esposo caminando1.png"
+import WcharacterImg2 from "../../img/animations/caminando/esposo caminando2.png"
+import WcharacterImg3 from "../../img/animations/caminando/esposo caminando3.png"
+import WcharacterImg4 from "../../img/animations/caminando/esposo caminando4.png"
+
+//jump
+import jumpImg4 from "../../img/animations/saltando/esposo saltando4.png"
+
 import { Constants } from '../constants';
 
 let speedX = 0;
@@ -17,6 +30,10 @@ let xIntervalLeft: number | undefined = undefined
 let yInterval: number | undefined = undefined
 
 const spriteImages = [characterImg1, characterImg2, characterImg3, characterImg4];
+const WspriteImages = [WcharacterImg1, WcharacterImg2, WcharacterImg3, WcharacterImg4];
+const JspriteImages = [jumpImg4];
+
+let animating: string | undefined = undefined
 
 let isQuietInterval: number | undefined = undefined
 
@@ -30,12 +47,13 @@ async function addBackground(app: Application) {
     app.stage.addChild(background);
 }
 
-async function addCharacter(app: Application, spriteImages: string[]) {
-
+async function loadSprites(spriteImages: string[]) {
     for (const image of spriteImages) {
         await Assets.load(image);
     }
+}
 
+async function addCharacter(app: Application, spriteImages: string[]) {
     const texture = await Assets.get(spriteImages[0]);
 
     const character = new Sprite(texture);
@@ -51,7 +69,7 @@ async function addCharacter(app: Application, spriteImages: string[]) {
 
     app.stage.addChild(character);
 
-    updateCharacterSprite(character, spriteImages);
+    updateCharacterSprite(character, spriteImages, "quiet");
 
     return character;
 }
@@ -90,8 +108,16 @@ function startJump(character: Sprite) {
     }
 }
 
-async function updateCharacterSprite(character: Sprite, spriteImages: string[]) {
+async function updateCharacterSprite(character: Sprite, spriteImages: string[], feature: string, reset: boolean = false) {
+    if (animating && animating === feature) {
+        return
+    }
+    if (reset) {
+        clearInterval(isQuietInterval);
+        isQuietInterval = undefined;
+    }
     if (!isQuietInterval) {
+        animating = feature
         let index = 0;
         isQuietInterval = setInterval(() => {
             const texture = Assets.get(spriteImages[index]);
@@ -163,16 +189,27 @@ function physics(character: Sprite, app: Application) {
             character.y = ground - 1
             speedY = 0
         }
-    })
 
-    app.ticker.add(() => {
         // console.log("speedX: ", speedX, "character.x: ", character.x, "app.screen.width: ", app.screen.width);
         if ((character.x + speedX) < wallRight && (character.x + speedX) > wallLeft) {
             character.x += speedX
         } else {
             speedX = 0
         }
+
+        if (speedY === 0 && speedX === 0) {
+            updateCharacterSprite(character, spriteImages, "quiet", true);
+        }
+
+        if (speedY != 0) {
+            updateCharacterSprite(character, JspriteImages, "jumping", true);
+        }
+
+        if (speedX != 0 && speedY === 0) {
+            updateCharacterSprite(character, WspriteImages, "walking", true);
+        }
     })
+
 }
 
 
@@ -191,6 +228,7 @@ export async function CreateGame() {
 
     await addBackground(app);
 
+    await loadSprites([...spriteImages, ...WspriteImages, ...JspriteImages]);
     const character = await addCharacter(app, spriteImages);
 
     characterMovement(character);
