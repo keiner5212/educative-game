@@ -1,0 +1,170 @@
+/* Estilos generales para el modal */
+.modal {
+  display: none;
+  /* Por defecto está oculto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  /* Coloca el modal sobre otros elementos */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.is-active {
+  display: flex;
+  /* Muestra el modal cuando está activo */
+}
+
+/* Fondo del modal */
+.modal-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fondo semitransparente */
+}
+
+/* Tarjeta del modal */
+.modal-card {
+  position: relative;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  z-index: 100;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+
+/* Encabezado del modal */
+.modal-card-head {
+  padding: 20px;
+  border-bottom: 1px solid #dbdbdb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Título del modal */
+.modal-card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Botón de cerrar */
+.delete {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Cuerpo del modal */
+.modal-card-body {
+  padding: 20px;
+  max-height: 70vh;
+  /* Evita que el contenido se desborde */
+  overflow-y: auto;
+}
+
+/* Pie de página del modal */
+.modal-card-foot {
+  padding: 20px;
+  border-top: 1px solid #dbdbdb;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Estilos para los botones */
+.button {
+  margin-left: 10px;
+  border: 1px solid #0000006a;
+  font-family: 'Fuzzy Bubbles', sans-serif;
+  cursor: pointer;
+  padding: 10px 25px;
+  color: #212121;
+  z-index: 1;
+  background: #e8e8e8;
+  position: relative;
+  font-weight: 1000;
+  font-size: 17px;
+  transition: all 250ms;
+  overflow: hidden;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+
+.button.is-success {
+  background-color: #48c774;
+  /*Verdedeéxito*/
+  color: white;
+}
+
+.button.is-success:hover {
+  background-color: #3ec46d;
+  /* Verde de éxito más oscuro */
+}
+
+.button:not(.is-success) {
+  background-color: #dbdbdb;
+  /* Gris por defecto */
+}
+
+.button:not(.is-success):hover {
+  background-color: #b5b5b5;
+  /* Gris más oscuro */
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  border-radius: 15px;
+  background-color: #212121;
+  z-index: -1;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  transition: all 250ms;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+
+.button:hover {
+  color: #e8e8e8;
+}
+
+.button:hover::before {
+  width: 100%;
+}
+
+#close-modal{
+  transition: all .3s ease;
+  -webkit-transition: all .3s ease;
+  -moz-transition: all .3s ease;
+  -ms-transition: all .3s ease;
+  -o-transition: all .3s ease;
+}
+
+#close-modal:hover{
+  transform: scale(1.2);
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  -o-transform: scale(1.2);
+}
