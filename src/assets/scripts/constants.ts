@@ -1,0 +1,7 @@
+export class Constants {
+    public static readonly CHARACTER_HEIGHT = 100;
+    public static readonly CHARACTER_WIDTH = 100;
+    public static readonly GRAVITY = 3;
+    public static readonly MAX_SPEED_X = 7;
+    public static readonly MAX_SPEED_Y = 12;
+}

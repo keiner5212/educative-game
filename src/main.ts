@@ -15,7 +15,9 @@ import { playMusic } from "./assets/scripts/game/music";
 
 const acepted = localStorage.getItem("accepted")
 if (acepted == "true") {
-    playMusic()
+    if (localStorage.getItem("music") == "true" || !localStorage.getItem("music")) {
+        playMusic()
+    }
     ShowMenu()
 } else {
     createModal("Informacion", "El siguiente juego es educativo y solo esta disponible en el navegador web para computadores", "Ok", "Salir",
