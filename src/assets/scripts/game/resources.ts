@@ -83,3 +83,99 @@ export const filmSepiaFilter = new OldFilmFilter({
 });
 
 export const noiseFilter = new NoiseFilter();
+
+
+export const riddles = [
+	{
+		question:
+			"Redondo soy y es cosa anunciada. Si estoy a la derecha algo valgo, pero a la izquierda soy nada. ¿Cuál número soy?",
+		answer: "0",
+	},
+	{
+		question:
+			"Si quieres contar, por qué tienes que empezar. ¿Cuál número soy?",
+		answer: "1",
+	},
+	{
+		question:
+			"Corren más que los minutos, pero nunca son los primeros. ¿Quiénes son?",
+		answer: "Los segundos",
+	},
+	{
+		question:
+			"¿Qué número tiene el mismo número de letras que el valor que expresa?",
+		answer: "5",
+	},
+	{
+		question:
+			"Vuelo de noche, duermo en el día y nunca veras plumas en ala mía.",
+		answer: "Murciélago",
+	},
+	{
+		question:
+			"Canto en la orilla, vivo en el agua, no soy pescado ni cigarra. ¿Quién soy?",
+		answer: "Rana",
+	},
+	{
+		question:
+			"Soy un insecto que vuela entre las flores, tengo dos alitas de muchos colores.",
+		answer: "mariposa",
+	},
+	{
+		question:
+			"Dos pinzas tengo y hacia atrás camino, de mar o de río en el agua vivo. ¿Quién soy?",
+		answer: "el cangrejo",
+	},
+	{
+		question:
+			"Preparo ricos manjares, mi lugar es la casa de restaurantes y hoteles. ¿Veamos quién lo adivina?",
+		answer: "chef",
+	},
+	{
+		question:
+			"Con madera de pino, haya o de nogal construyo los muebles para tu hogar.",
+		answer: "carpintero",
+	},
+	{
+		question:
+			"Es el héroe de la comunidad y la cuida noche y día para conservar la seguridad.",
+		answer: "policía",
+	},
+	{
+		question:
+			"Con una manguera, casco y escalera, apago el fuego de la hoguera. ¿Quién soy?",
+		answer: "bombero",
+	},
+	{
+		question: "Dificil",
+		answer: "El agujero",
+	},
+	{
+		question: "Van siempre en la sopa, pero nunca has de comerlos.",
+		answer: "plato y cuchara",
+	},
+	{
+		question:
+			"No muerde ni ladra, pero tiene dientes y la casa guarda. ¿Qué es?",
+		answer: "llave",
+	},
+	{
+		question: "¿cuál es el ave que tiene la panza llana?",
+		answer: "avellana",
+	},
+	{
+		question:
+			"Muchas lamparitas muy bien colgaditas, siempre encandiladas, y nadie las atiza.",
+		answer: "las estrellas",
+	},
+	{
+		question:
+			"Es más grande, muy grande, mayor que la Tierra. Arde y no se quema, quema y no es candela.",
+		answer: "el sol",
+	},
+	{
+		question:
+			"¿Cuál es aquel pobrecito, siempre andando, siempre andando, y no sale de su sitio?",
+		answer: "el reloj",
+	},
+];

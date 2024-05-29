@@ -1,76 +1,101 @@
-import { Sprite, Text, Container, Assets, TextStyle, Graphics } from 'pixi.js';
+import { Sprite, Text, Container, Assets, TextStyle } from "pixi.js";
+import "./dialog.css";
 
 export async function showDialog(
-    dialogSprite: string,
-    dialog: string,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    onClickCallback: () => void 
+	dialogSprite: string,
+	dialog: string,
+	x: number,
+	y: number
 ) {
-    const texture = await Assets.get(dialogSprite);
-    texture.source.scaleMode = "nearest";
+	const width = 900;
+	const height = 200;
 
-    const card = new Sprite(texture);
-    card.anchor.set(0.5);
-    card.width = width;
-    card.height = height;
+	const texture = await Assets.get(dialogSprite);
+	texture.source.scaleMode = "nearest";
 
-    const textStyle = new TextStyle({
-        fontFamily: 'Georgia',
-        fontSize: 24,
-        fill: 'black',
-        wordWrap: true,
-        wordWrapWidth: width - 20,
-    });
+	const card = new Sprite(texture);
+	card.anchor.set(0.5);
+	card.width = width;
+	card.height = height;
 
-    const dialogText = new Text('', textStyle); 
-    dialogText.anchor.set(0.5);
-    dialogText.x = 0;
-    dialogText.y = 0;
+	const textStyle = new TextStyle({
+		fontFamily: "Georgia",
+		fontSize: 24,
+		fill: "black",
+		wordWrap: true,
+		wordWrapWidth: width - 20,
+	});
 
-    const container = new Container();
-    container.addChild(card);
-    container.addChild(dialogText);
-    container.x = x;
-    container.y = y;
+	const dialogText = new Text("", textStyle);
+	dialogText.anchor.set(0.5);
+	dialogText.x = 0;
+	dialogText.y = 0;
 
-    const button = new Graphics();
-    button.beginFill(0x12152b); 
-    button.lineStyle(2, 0xffffff); 
-    button.drawRect(-width/2 + 250 , height / 2 + 10, 400, 30); 
-    button.endFill();
-    button.interactive = true;
-    button.cursor = 'pointer';
-    button.on('pointerdown', onClickCallback); 
+	const container = new Container();
+	container.addChild(card);
+	container.addChild(dialogText);
+	container.x = x;
+	container.y = y;
 
-    const buttonText = new Text('Siguiente', {
-        fontFamily: 'Georgia',
-        fontSize: 24,
-        fill: 'white',
-        fontStyle: 'oblique',
-    });
-    buttonText.anchor.set(0.5);
-    buttonText.position.set(0, height / 2 + 25); 
+	const textToWrite = dialog;
+	let currentText = "";
+	let currentIndex = 0;
+	const typingInterval = 40;
 
-    button.addChild(buttonText);
-    container.addChild(button);
+	const typingTimer = setInterval(() => {
+		if (currentIndex < textToWrite.length) {
+			currentText += textToWrite[currentIndex];
+			dialogText.text = currentText;
+			currentIndex++;
+		} else {
+			clearInterval(typingTimer);
+		}
+	}, typingInterval);
 
-    const textToWrite = dialog;
-    let currentText = '';
-    let currentIndex = 0;
-    const typingInterval = 40; 
+	return container;
+}
 
-    const typingTimer = setInterval(() => {
-        if (currentIndex < textToWrite.length) {
-            currentText += textToWrite[currentIndex];
-            dialogText.text = currentText;
-            currentIndex++;
-        } else {
-            clearInterval(typingTimer);
-        }
-    }, typingInterval);
+export function createButtonAt(
+	x: number,
+	y: number,
+	buttonText: string,
+	action: () => void
+) {
+	const wraper = document.getElementById("root-wraper");
+	if (!wraper) return;
+	wraper.innerHTML += `
+    <div id="dialog-button" style="top: ${y}px; left: ${x}px;">
+        <button class="dialog-button button">${buttonText}</button>
+    </div>`;
 
-    return container;
+	document.querySelector(".dialog-button")?.addEventListener("click", () => {
+		action();
+		removeDialogButton();
+	});
+}
+
+export function createDialogInputForm(
+	x: number,
+	y: number,
+	buttonText: string,
+	action: (value: string) => void
+) {
+	const wraper = document.getElementById("root-wraper");
+	if (!wraper) return;
+	wraper.innerHTML += `
+    <div id="dialog-button" style="top: ${y}px; left: ${x}px;">
+        <input class="dialog-button button" type="text" id="dialog-input" placeholder="Your answer..." >
+        <button class="dialog-button">${buttonText}</button>
+    </div>`;
+
+	document.querySelector(".dialog-button")?.addEventListener("click", () => {
+		action(
+			(document.querySelector("#dialog-input") as HTMLInputElement).value
+		);
+		removeDialogButton();
+	});
+}
+
+export function removeDialogButton() {
+	document.querySelector("#dialog-button")?.remove();
 }

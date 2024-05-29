@@ -13,7 +13,7 @@ import {
 	spriteImages,
 	subgroundTile,
 	womangif,
-} from "./sprites";
+} from "./resources";
 import { loadContent } from "./motor/utils";
 import {
 	SetBackgroundRepeating,
@@ -38,7 +38,7 @@ import {
 import { Constants } from "../constants";
 import { closeModal } from "../utils";
 import { Application, Container } from "pixi.js";
-import { showDialog } from "./motor/dialog";
+import { createButtonAt, showDialog } from "./motor/dialog";
 
 const esceneBg = new Container();
 export async function CreateGame() {
@@ -83,19 +83,22 @@ export async function CreateGame() {
 		dialogImg,
 		"Todo lo que amo y mi corazón están en enigma world.",
 		window.innerWidth / 2,
-		window.innerHeight / 2 + 250,
-		900,
-		200,
-		dialogAction
+		window.innerHeight / 2 + 250
+	);
+
+	createButtonAt(
+		window.innerWidth / 2,
+		window.innerHeight / 2 + 350,
+		"Continuar",
+		async () => {
+			app.stage.removeChild(dialog1);
+			app.stage.removeChild(character);
+			deleteAnimation(character);
+			await scene2(app);
+		}
 	);
 
 	app.stage.addChild(dialog1);
-	async function dialogAction() {
-		app.stage.removeChild(dialog1);
-		app.stage.removeChild(character);
-		deleteAnimation(character);
-		await scene2(app);
-	}
 }
 
 async function scene2(app: Application) {
@@ -129,21 +132,24 @@ async function scene2(app: Application) {
 		dialogImg,
 		"Cuando el malvado conde enigma secuestro a bella esposa Angela.",
 		window.innerWidth / 2,
-		window.innerHeight / 2 + 250,
-		900,
-		200,
-		dialogAction
+		window.innerHeight / 2 + 250
+	);
+
+	createButtonAt(
+		window.innerWidth / 2,
+		window.innerHeight / 2 + 350,
+		"Continuar",
+		async () => {
+			app.stage.removeChild(dialog1);
+			app.stage.removeChild(woman);
+			app.stage.removeChild(enemy);
+			deleteAnimation(woman);
+			deleteAnimation(enemy);
+			await scene3(app);
+		}
 	);
 
 	app.stage.addChild(dialog1);
-	async function dialogAction() {
-		app.stage.removeChild(dialog1);
-		app.stage.removeChild(woman);
-		app.stage.removeChild(enemy);
-		deleteAnimation(woman);
-		deleteAnimation(enemy);
-		await scene3(app);
-	}
 }
 
 async function scene3(app: Application) {
@@ -162,22 +168,24 @@ async function scene3(app: Application) {
 		dialogImg,
 		"Ahora tengo que ir en busca de ella.. para recuperar a mi hermosa amada.",
 		window.innerWidth / 2,
-		window.innerHeight / 2 + 250,
-		900,
-		200,
-		dialogAction
+		window.innerHeight / 2 + 250
+	);
+	createButtonAt(
+		window.innerWidth / 2,
+		window.innerHeight / 2 + 350,
+		"Continuar",
+		async () => {
+			app.stage.removeChild(dialog1);
+			app.stage.removeChild(character);
+			esceneBg.filters = [];
+			app.ticker.remove(SepiaOldFilter);
+			app.ticker.remove(animateNoise);
+			deleteAnimation(character);
+			await createPlayable(app);
+		}
 	);
 
 	app.stage.addChild(dialog1);
-	async function dialogAction() {
-		app.stage.removeChild(dialog1);
-		app.stage.removeChild(character);
-		esceneBg.filters = [];
-		app.ticker.remove(SepiaOldFilter);
-		app.ticker.remove(animateNoise);
-		deleteAnimation(character);
-		await createPlayable(app);
-	}
 }
 
 async function createPlayable(app: Application) {

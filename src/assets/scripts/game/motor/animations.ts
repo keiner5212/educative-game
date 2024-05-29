@@ -1,7 +1,7 @@
 import { Application, Assets, Sprite } from "pixi.js";
 import { animating, isQuietInterval, speedX, speedY } from "./variables";
 import { Constants } from "../../constants";
-import { filmSepiaFilter, noiseFilter } from "../sprites";
+import { filmSepiaFilter, noiseFilter } from "../resources";
 
 export function deleteAnimation(character: Sprite) {
 	clearInterval(isQuietInterval[character.uid]);

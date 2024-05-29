@@ -45,14 +45,6 @@
     -o-transform: rotate(11deg) translateX(250px);
 }
 
-.game-camvas{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-}
-
 .modal-card-center-text{
     text-align: center;
 }

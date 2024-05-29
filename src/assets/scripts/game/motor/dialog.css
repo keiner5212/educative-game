@@ -1,0 +1,15 @@
+#dialog-button{
+    z-index: 6;
+    position: fixed !important;
+    display: flex;
+    margin: 0px;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+
+    & *{
+        margin: 0px;
+    }
+}
