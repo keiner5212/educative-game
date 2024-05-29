@@ -7,9 +7,13 @@ export async function updateCharacterSprite(
 	spriteImages: string[],
 	feature: string,
 	reset: boolean = false,
-	spriteSpeed: number = 200
+	spriteSpeed: number = Constants.ANIMATION_UPDATE
 ) {
-	if (animating[character.uid] && animating[character.uid] === feature) {
+	if (
+		animating[character.uid] &&
+		(animating[character.uid] === feature ||
+			animating[character.uid] === "jumping")
+	) {
 		return;
 	}
 	if (reset) {
@@ -28,17 +32,31 @@ export async function updateCharacterSprite(
 	}
 }
 
+export async function updateSpriteTexture(
+	character: Sprite,
+	spriteImage: string
+) {
+	const texture = await Assets.get(spriteImage);
+	texture.source.scaleMode = "nearest";
+	character.texture = texture;
+}
+
 export function setJumpingAnimations(
 	character: Sprite,
 	app: Application,
 	sprites: string[]
 ) {
 	app.ticker.add(() => {
-		if (
-			speedY[character.uid] != 0 &&
-			speedY[character.uid] < -Constants.GRAVITY
-		) {
-			updateCharacterSprite(character, sprites, "jumping", true);
+		if (speedY[character.uid] != 0) {
+			animating[character.uid] = "jumping";
+			clearInterval(isQuietInterval[character.uid]);
+			if (speedY[character.uid] < 0) {
+				updateSpriteTexture(character, sprites[0]);
+			} else {
+				updateSpriteTexture(character, sprites[1]);
+			}
+		} else if (animating[character.uid] === "jumping") {
+			delete animating[character.uid];
 		}
 	});
 }
@@ -46,11 +64,18 @@ export function setJumpingAnimations(
 export function setQuietAnimations(
 	character: Sprite,
 	app: Application,
-	sprites: string[]
+	sprites: string[],
+	spriteSpeed?: number
 ) {
 	app.ticker.add(() => {
 		if (speedY[character.uid] === 0 && speedX[character.uid] === 0) {
-			updateCharacterSprite(character, sprites, "quiet", true);
+			updateCharacterSprite(
+				character,
+				sprites,
+				"quiet",
+				true,
+				spriteSpeed
+			);
 		}
 	});
 }
@@ -58,11 +83,18 @@ export function setQuietAnimations(
 export function setMovingAnimations(
 	character: Sprite,
 	app: Application,
-	sprites: string[]
+	sprites: string[],
+	spriteSpeed?: number
 ) {
 	app.ticker.add(() => {
 		if (speedX[character.uid] != 0 && speedY[character.uid] === 0) {
-			updateCharacterSprite(character, sprites, "walking", true);
+			updateCharacterSprite(
+				character,
+				sprites,
+				"walking",
+				true,
+				spriteSpeed
+			);
 		}
 	});
 }

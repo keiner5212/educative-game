@@ -11,7 +11,7 @@ import "./assets/styles/background.css"
 import { createModal } from './assets/scripts/components/modal';
 import { IsMobile, openModal } from './assets/scripts/utils';
 import { ShowMenu } from "./assets/scripts/game/menu";
-import { playMusic } from "./assets/scripts/game/music";
+import { playMusic } from "./assets/scripts/game/motor/music";
 
 const acepted = localStorage.getItem("accepted")
 if (acepted == "true") {

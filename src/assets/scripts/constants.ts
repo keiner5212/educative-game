@@ -1,3 +1,5 @@
+import { ground } from "./game/motor/variables";
+
 export class Constants {
     public static readonly CHARACTER_HEIGHT = 100;
     public static readonly CHARACTER_WIDTH = 100;
@@ -5,4 +7,8 @@ export class Constants {
     public static readonly MAX_SPEED_X = 5;
     public static readonly MAX_SPEED_Y = 12;
     public static readonly ENEMY_MOVE_SPEED = 3;
+	public static readonly  GROUND = ground - 135;
+    public static readonly JUMPER_INTERVAL = 1000;
+    public static readonly ANIMATION_UPDATE = 100;
+    public static readonly MOVEMENT_UPDATE = 95;
 }

@@ -1,8 +1,8 @@
 import { CreateGame } from ".";
 import "../../styles/menu.css"
-import { settings } from "../components/modal"
+import { credits, settings } from "../components/modal"
 import { openModal, removeBackground } from "../utils"
-import menuImg from "../../img/UntitledArtwork1 - 3.png"
+import menuImg from "../../img/personajes/villano animacion/UntitledArtwork2 - 1.png"
 
 export function removeMenu() {
     document.querySelector('.menu-wrapper')?.remove();
@@ -34,8 +34,9 @@ export function ShowMenu() {
     })
 
     document.getElementById('credits-button')?.addEventListener('click', () => {
-        // credits()
-        console.log("credits");
+        credits()
+        openModal()
+        removeMenu()
     })
 
 }

@@ -48,7 +48,8 @@ export function setCharacterPos(character: Sprite, x: number, y: number) {
 export function characterMovement(
 	character: Sprite,
 	app: Application,
-	initialDir: number
+	initialDir: number,
+	chGround: number = ground
 ) {
 	window.addEventListener("keydown", (e) => {
 		keys[e.key] = true;
@@ -84,7 +85,7 @@ export function characterMovement(
 		}
 
 		if (keys["ArrowUp"] || keys["w"] || keys[" "]) {
-			startJump(character);
+			startJump(character, chGround);
 		}
 	}
 
@@ -105,7 +106,7 @@ export function enemyMovement(
 		if (!JumperInterval[character.uid]) {
 			JumperInterval[character.uid] = setInterval(() => {
 				aleatoryJump(character, 6, groundLimit);
-			}, 500);
+			}, Constants.JUMPER_INTERVAL);
 		}
 	}
 	app.ticker.add(() => {

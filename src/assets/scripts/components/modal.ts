@@ -1,9 +1,16 @@
-import { ShowMenu } from "../game/menu"
-import { playMusic, setVolume, stopMusic } from "../game/music"
-import { accept, closeModal, closeModalXButton, decline } from "../utils"
+import { ShowMenu } from "../game/menu";
+import { playMusic, setVolume, stopMusic } from "../game/motor/music";
+import { accept, closeModal, closeModalXButton, decline } from "../utils";
 
-export function createModal(title: string, message: string, okMessage: string, decMessage: string, acceptF: any, declineF: any) {
-    document.body.innerHTML += `
+export function createModal(
+	title: string,
+	message: string,
+	okMessage: string,
+	decMessage: string,
+	acceptF: any,
+	declineF: any
+) {
+	document.body.innerHTML += `
         <div class="modal">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -20,24 +27,27 @@ export function createModal(title: string, message: string, okMessage: string, d
                 </footer>
             </div>
         </div>
-    `
+    `;
 
-    document.getElementById('close-modal')?.addEventListener('click', () => {
-        closeModalXButton()
-    })
+	document.getElementById("close-modal")?.addEventListener("click", () => {
+		closeModalXButton();
+	});
 
-    document.getElementById('modal-accept-button')?.addEventListener('click', () => {
-        accept(acceptF)
-    })
+	document
+		.getElementById("modal-accept-button")
+		?.addEventListener("click", () => {
+			accept(acceptF);
+		});
 
-    document.getElementById('modal-decline-button')?.addEventListener('click', () => {
-        decline(declineF)
-    })
+	document
+		.getElementById("modal-decline-button")
+		?.addEventListener("click", () => {
+			decline(declineF);
+		});
 }
 
-
 export function settings() {
-    document.body.innerHTML += `
+	document.body.innerHTML += `
         <div class="modal">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -49,8 +59,12 @@ export function settings() {
 
                     <div class="PB-range-slider-div">
                         <label for="volume-range">Volume: </label>
-                        <input type="range" min="0" max="100" value=${localStorage.getItem("volume")} class="PB-range-slider" id="volume-range">
-                        <p class="PB-range-slidervalue">${localStorage.getItem("volume")}%</p>
+                        <input type="range" min="0" max="100" value=${localStorage.getItem(
+							"volume"
+						)} class="PB-range-slider" id="volume-range">
+                        <p class="PB-range-slidervalue">${localStorage.getItem(
+							"volume"
+						)}%</p>
                         <button id="toggle-volume-button" class="PB-volume-button"><i class="fa-solid fa-volume-xmark"></i></button>
                     </div>
 
@@ -61,64 +75,120 @@ export function settings() {
                 </footer>
             </div>
         </div>
-    `
+    `;
 
-    const slider = document.getElementById('volume-range') as HTMLInputElement
+	const slider = document.getElementById("volume-range") as HTMLInputElement;
 
-    if (localStorage.getItem("music") === "false") {
-        stopMusic()
-        const quitVolumeButton = document.getElementById('toggle-volume-button')
-        if (quitVolumeButton)
-            quitVolumeButton.style.backgroundColor = "#00000032"
+	if (localStorage.getItem("music") === "false") {
+		stopMusic();
+		const quitVolumeButton = document.getElementById(
+			"toggle-volume-button"
+		);
+		if (quitVolumeButton)
+			quitVolumeButton.style.backgroundColor = "#00000032";
 
-        slider.disabled = true
-    }
+		slider.disabled = true;
+	}
 
+	slider?.addEventListener("input", () => {
+		const volume = document.querySelector(".PB-range-slidervalue");
+		if (slider && volume) {
+			volume.innerHTML = `${slider ? slider.value : 0}%`;
+		}
+	});
 
-    slider?.addEventListener('input', () => {
-        const volume = document.querySelector('.PB-range-slidervalue')
-        if (slider && volume) {
-            volume.innerHTML = `${slider ? slider.value : 0}%`
-        }
-    })
+	document.getElementById("close-modal")?.addEventListener("click", () => {
+		closeModal();
+		ShowMenu();
+	});
 
-    document.getElementById('close-modal')?.addEventListener('click', () => {
-        closeModal()
-        ShowMenu()
-    })
+	document
+		.getElementById("modal-accept-button")
+		?.addEventListener("click", () => {
+			const slider = document.getElementById(
+				"volume-range"
+			) as HTMLInputElement;
+			if (slider) {
+				setVolume(parseInt(slider.value));
+			}
 
-    document.getElementById('modal-accept-button')?.addEventListener('click', () => {
-        const slider = document.getElementById('volume-range') as HTMLInputElement
-        if (slider) {
-            setVolume(parseInt(slider.value))
-        }
+			closeModal();
+			ShowMenu();
+		});
 
-        closeModal()
-        ShowMenu()
-    })
+	document
+		.getElementById("modal-decline-button")
+		?.addEventListener("click", () => {
+			closeModal();
+			ShowMenu();
+		});
 
-    document.getElementById('modal-decline-button')?.addEventListener('click', () => {
-        closeModal()
-        ShowMenu()
-    })
+	const quitVolumeButton = document.getElementById("toggle-volume-button");
+	if (quitVolumeButton) {
+		quitVolumeButton.addEventListener("click", () => {
+			if (!slider.disabled) {
+				stopMusic();
+				quitVolumeButton.style.backgroundColor = "#00000032";
+				localStorage.setItem("music", "false");
+			} else {
+				playMusic();
+				quitVolumeButton.style.backgroundColor = "#fff";
+				localStorage.setItem("music", "true");
+			}
+			slider.disabled = !slider.disabled;
+		});
+	}
+}
 
-    const quitVolumeButton = document.getElementById('toggle-volume-button')
-    if (quitVolumeButton) {
-        quitVolumeButton.addEventListener('click', () => {
-            if (!slider.disabled) {
-                stopMusic()
-                quitVolumeButton.style.backgroundColor = "#00000032"
-                localStorage.setItem("music", "false")
-            } else {
-                playMusic()
-                quitVolumeButton.style.backgroundColor = "#fff"
-                localStorage.setItem("music", "true")
-            }
-            slider.disabled = !slider.disabled
+export function credits() {
+	document.body.innerHTML += `
+    <div class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Credits</p>
+                <button id="close-modal" class="delete" aria-label="close"><i class="fa-regular fa-circle-xmark"></i></button>
+            </header>
+            <section class="modal-card-body">
+                <p class="modal-card-center-text">
+                Creado por
+                <br/>
+                A.Marcela Rodrigues y Lewys Moscote estudiantes 1 semestre de Diseño Grafico 
+                <br/>
+                Con la colaboración de Keiner Alvarado, estudiante 8 semestre de ingeniería de sistema de la Unimagdalena
+                <br/>
+                <br/>
+                A cargo de
+                <br/>
+                Docente Maria Consuelo 
+                Pensamiento logico
+                Areandina 20241
+                </p>
+            </section>
+            <footer class="modal-card-foot">
+                <button id="modal-accept-button" class="button is-success">OK</button>
+                <button id="modal-decline-button" class="button">Close</button>
+            </footer>
+        </div>
+    </div>
+`;
 
-        })
-    }
+	document
+		.getElementById("modal-decline-button")
+		?.addEventListener("click", () => {
+			closeModal();
+			ShowMenu();
+		});
 
+	document.getElementById("close-modal")?.addEventListener("click", () => {
+		closeModal();
+		ShowMenu();
+	});
 
-
+	document
+		.getElementById("modal-accept-button")
+		?.addEventListener("click", () => {
+			closeModal();
+			ShowMenu();
+		});
 }

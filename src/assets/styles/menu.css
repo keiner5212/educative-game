@@ -52,3 +52,7 @@
     width: 100vw;
     height: 100vh;
 }
+
+.modal-card-center-text{
+    text-align: center;
+}

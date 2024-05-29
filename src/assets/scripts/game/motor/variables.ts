@@ -9,7 +9,7 @@ export const isQuietInterval: { [characterUID: number]: number } = {};
 export const JumperInterval: { [characterUID: number]: number } = {};
 
 // general
-export const ground = window.innerHeight - 135;
+export const ground = window.innerHeight;
 export const wallRight = window.innerWidth;
 export const keys: { [key: string]: boolean } = {};
 export const wallLeft = 0;

@@ -28,16 +28,16 @@ export async function SetBackground(app: Application, b_img: string) {
 export function physics(
 	character: Sprite,
 	app: Application,
-	characterY: number = ground - 1
+	characterGround: number = ground - 1
 ) {
 	app.ticker.add(() => {
-		// console.log("speedY: ", speedY, "character.y: ", character.y, "ground: ", ground);
-		if (character.y <= characterY) {
+		// console.log("speedY: ", speedY, "character.y: ", character.y, "ground: ", characterGround);
+		if (character.y <= characterGround && speedY[character.uid] !== 0) {
 			character.y += speedY[character.uid];
 		}
 
-		if (character.y > characterY) {
-			character.y = characterY;
+		if (character.y > characterGround) {
+			character.y = characterGround;
 			speedY[character.uid] = 0;
 		}
 
@@ -51,4 +51,82 @@ export function physics(
 			speedX[character.uid] = 0;
 		}
 	});
+}
+
+export async function SetBackgroundRepeating(app: Application, b_img: string) {
+	const texture = await Assets.get(b_img);
+
+	texture.source.scaleMode = "nearest";
+
+	const textureWidth = texture.width;
+	const textureHeight = texture.height;
+	const screenHeight = app.screen.height;
+	const screenWidth = app.screen.width;
+
+	const repeatCount = Math.ceil(screenWidth / textureWidth);
+
+	const scaleFactor = screenHeight / textureHeight;
+
+	for (let i = 0; i < repeatCount; i++) {
+		const sprite = new Sprite(texture);
+
+		sprite.x = i * textureWidth * scaleFactor;
+		sprite.y = 0;
+		sprite.width = textureWidth * scaleFactor;
+		sprite.height = screenHeight;
+
+		app.stage.addChild(sprite);
+	}
+}
+
+export async function SetGround(
+	app: Application,
+	g_img: string,
+	ground?: number,
+	scaleFactor: number = 2
+) {
+	const texture = await Assets.get(g_img);
+
+	texture.source.scaleMode = "nearest";
+
+	const textureWidth = texture.width;
+	const textureHeight = texture.height;
+	const screenWidth = app.screen.width;
+
+	const groundH = (ground ?? app.screen.height) - textureHeight * scaleFactor;
+
+	const repeatCount = Math.ceil(screenWidth / textureWidth);
+
+	for (let i = 0; i < repeatCount; i++) {
+		const sprite = new Sprite(texture);
+
+		sprite.x = i * textureWidth * scaleFactor;
+		sprite.y = groundH;
+		sprite.width = textureWidth * scaleFactor;
+		sprite.height = textureHeight * scaleFactor;
+
+		app.stage.addChild(sprite);
+	}
+
+	return textureHeight * scaleFactor;
+}
+
+export async function SetDoubleGround(
+	app: Application,
+	g_imgs: string[],
+	scaleFactor: number = 2,
+	heightReducer: number = 0
+) {
+	const subgH = await SetGround(
+		app,
+		g_imgs[0],
+		ground + heightReducer,
+		scaleFactor
+	);
+	await SetGround(
+		app,
+		g_imgs[1],
+		ground - subgH + heightReducer,
+		scaleFactor
+	);
 }
