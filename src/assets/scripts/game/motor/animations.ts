@@ -1,6 +1,13 @@
 import { Application, Assets, Sprite } from "pixi.js";
 import { animating, isQuietInterval, speedX, speedY } from "./variables";
 import { Constants } from "../../constants";
+import { filmSepiaFilter, noiseFilter } from "../sprites";
+
+export function deleteAnimation(character: Sprite) {
+	clearInterval(isQuietInterval[character.uid]);
+	delete isQuietInterval[character.uid];
+	delete animating[character.uid];
+}
 
 export async function updateCharacterSprite(
 	character: Sprite,
@@ -46,6 +53,9 @@ export function setJumpingAnimations(
 	app: Application,
 	sprites: string[]
 ) {
+	if (sprites.length !== 2) {
+		throw new Error("Jumping animations must have 2 sprites");
+	}
 	app.ticker.add(() => {
 		if (speedY[character.uid] != 0) {
 			animating[character.uid] = "jumping";
@@ -97,4 +107,60 @@ export function setMovingAnimations(
 			);
 		}
 	});
+}
+
+export async function animateSmoothsprite(
+	sprite: Sprite,
+	targetx: number,
+	targety: number
+) {
+	const deltay = targety - sprite.y;
+	const deltax = targetx - sprite.x;
+
+	if (deltax === 0 || deltay === 0) {
+		const speedx = 1;
+		const speedy = 1;
+		const interval = setInterval(() => {
+			if (sprite.x != targetx || sprite.y != targety) {
+				if (sprite.x < targetx) {
+					sprite.x += speedx;
+				} else if (sprite.x > targetx) {
+					sprite.x -= speedx;
+				}
+
+				if (sprite.y < targety) {
+					sprite.y += speedy;
+				} else if (sprite.y > targety) {
+					sprite.y -= speedy;
+				}
+			} else {
+				clearInterval(interval);
+			}
+		}, 5);
+	} else {
+		const numSteps = Math.round(Math.sqrt(Math.round(deltax * deltax + deltay * deltay)));
+		const dx = deltax / numSteps;
+		const dy = deltay / numSteps;
+		
+		const interval = setInterval(() => {
+			// console.log("sprite.x: ", sprite.x, "targetx: ", targetx, "dx: ", dx, "sprite.y: ", sprite.y, "targety: ", targety, "dy: ", dy, "numSteps: ", numSteps);
+			if (Math.round(sprite.x) != targetx || Math.round(sprite.y) != targety) {
+				sprite.x += dx;
+				sprite.y += dy;
+			} else {
+				clearInterval(interval);
+			}
+		}, 5);
+	}
+}
+
+export function animateNoise() {
+	const time = Date.now();
+	const noiseValue = Math.sin(time * 0.001) * 0.07 + 0.1;
+	noiseFilter.noise = noiseValue;
+}
+export function SepiaOldFilter() {
+	const time = Date.now();
+	const noiseValue = Math.sin(time * 0.001) * 0.07 + 0.3;
+	filmSepiaFilter.vignetting = noiseValue;
 }

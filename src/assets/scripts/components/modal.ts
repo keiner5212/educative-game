@@ -1,6 +1,7 @@
 import { ShowMenu } from "../game/menu";
 import { playMusic, setVolume, stopMusic } from "../game/motor/music";
 import { accept, closeModal, closeModalXButton, decline } from "../utils";
+import "../../styles/loader.css";
 
 export function createModal(
 	title: string,
@@ -191,4 +192,23 @@ export function credits() {
 			closeModal();
 			ShowMenu();
 		});
+}
+
+export function loader() {
+	document.body.innerHTML += `
+	<div class="modal">
+		<div class="modal-background">
+			<div class="spinner-container">
+				<div class="spinner">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	`;
 }

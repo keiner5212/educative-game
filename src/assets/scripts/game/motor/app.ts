@@ -1,4 +1,4 @@
-import { Application, Assets, Sprite } from "pixi.js";
+import { Application, Assets, Container, Sprite } from "pixi.js";
 import { ground, speedX, speedY, wallLeft, wallRight } from "./variables";
 
 export async function setupApp(
@@ -53,15 +53,14 @@ export function physics(
 	});
 }
 
-export async function SetBackgroundRepeating(app: Application, b_img: string) {
+export async function SetBackgroundRepeating(c: Container<any>, b_img: string) {
 	const texture = await Assets.get(b_img);
-
 	texture.source.scaleMode = "nearest";
 
 	const textureWidth = texture.width;
 	const textureHeight = texture.height;
-	const screenHeight = app.screen.height;
-	const screenWidth = app.screen.width;
+	const screenHeight = window.innerHeight;
+	const screenWidth = window.innerWidth;
 
 	const repeatCount = Math.ceil(screenWidth / textureWidth);
 
@@ -75,12 +74,12 @@ export async function SetBackgroundRepeating(app: Application, b_img: string) {
 		sprite.width = textureWidth * scaleFactor;
 		sprite.height = screenHeight;
 
-		app.stage.addChild(sprite);
+		c.addChild(sprite);
 	}
 }
 
 export async function SetGround(
-	app: Application,
+	c: Container<any>,
 	g_img: string,
 	ground?: number,
 	scaleFactor: number = 2
@@ -91,9 +90,9 @@ export async function SetGround(
 
 	const textureWidth = texture.width;
 	const textureHeight = texture.height;
-	const screenWidth = app.screen.width;
+	const screenWidth = window.innerWidth;
 
-	const groundH = (ground ?? app.screen.height) - textureHeight * scaleFactor;
+	const groundH = (ground ?? c.height) - textureHeight * scaleFactor;
 
 	const repeatCount = Math.ceil(screenWidth / textureWidth);
 
@@ -105,28 +104,23 @@ export async function SetGround(
 		sprite.width = textureWidth * scaleFactor;
 		sprite.height = textureHeight * scaleFactor;
 
-		app.stage.addChild(sprite);
+		c.addChild(sprite);
 	}
 
 	return textureHeight * scaleFactor;
 }
 
 export async function SetDoubleGround(
-	app: Application,
+	c: Container<any>,
 	g_imgs: string[],
 	scaleFactor: number = 2,
 	heightReducer: number = 0
 ) {
 	const subgH = await SetGround(
-		app,
+		c,
 		g_imgs[0],
 		ground + heightReducer,
 		scaleFactor
 	);
-	await SetGround(
-		app,
-		g_imgs[1],
-		ground - subgH + heightReducer,
-		scaleFactor
-	);
+	await SetGround(c, g_imgs[1], ground - subgH + heightReducer, scaleFactor);
 }

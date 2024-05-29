@@ -67,10 +67,11 @@ export function startJump(character: Sprite, ground: number) {
 export function aleatoryJump(
 	character: Sprite,
 	maxSpeed: number,
-	groundLimit: number
+	groundLimit: number,
+	probability: number
 ) {
 	const random = Math.random();
-	if (random < 0.5) {
+	if (random < probability) {
 		if (!yInterval[character.uid] && character.y <= groundLimit) {
 			speedY[character.uid] = -maxSpeed;
 			yInterval[character.uid] = setInterval(() => {

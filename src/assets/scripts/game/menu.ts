@@ -1,6 +1,6 @@
 import { CreateGame } from ".";
 import "../../styles/menu.css"
-import { credits, settings } from "../components/modal"
+import { credits, loader, settings } from "../components/modal"
 import { openModal, removeBackground } from "../utils"
 import menuImg from "../../img/personajes/villano animacion/UntitledArtwork2 - 1.png"
 
@@ -24,6 +24,8 @@ export function ShowMenu() {
     document.getElementById('play-button')?.addEventListener('click', () => {
         removeMenu()
         removeBackground()
+        loader()
+        openModal()
         CreateGame()
     })
 

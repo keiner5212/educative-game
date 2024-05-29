@@ -19,23 +19,23 @@ import {
 } from "./movement";
 import { Constants } from "../../constants";
 
-export async function addCharacter(
-	app: Application,
+export async function CreateSprite(
 	initialQuietSprites: string[],
 	x?: number,
-	y?: number
+	y?: number,
+	height?: number,
+	width?: number
 ) {
 	const texture = await Assets.get(initialQuietSprites[0]);
 	const character = new Sprite(texture);
 	character.anchor.x = 0.5;
 	texture.source.scaleMode = "nearest";
-	character.width = Constants.CHARACTER_WIDTH;
-	character.height = Constants.CHARACTER_HEIGHT;
-	character.x = x ?? app.screen.width / 2;
+	character.width = width ?? Constants.CHARACTER_WIDTH;
+	character.height = height ?? Constants.CHARACTER_HEIGHT;
+	character.x = x ?? window.innerWidth / 2;
 	character.y = y ?? ground - 1;
 	speedY[character.uid] = 0;
 	speedX[character.uid] = 0;
-	app.stage.addChild(character);
 	updateCharacterSprite(character, initialQuietSprites, "quiet");
 	return character;
 }
@@ -78,9 +78,17 @@ export function characterMovement(
 	});
 
 	function updateCharacterMovement(character: Sprite) {
-		if (keys["ArrowRight"] || keys["d"]) {
+		if (
+			(keys["ArrowRight"] || keys["d"]) &&
+			!(keys["ArrowLeft"] || keys["a"])
+		) {
 			startMovementRight(character, Constants.MAX_SPEED_X, initialDir);
-		} else if (keys["ArrowLeft"] || keys["a"]) {
+		}
+
+		if (
+			(keys["ArrowLeft"] || keys["a"]) &&
+			!(keys["ArrowRight"] || keys["d"])
+		) {
 			startMovementLeft(character, -Constants.MAX_SPEED_X, -initialDir);
 		}
 
@@ -99,13 +107,13 @@ export function enemyMovement(
 	player: Sprite,
 	app: Application,
 	initialDir: number,
-	jumper: boolean,
+	jumper: { value: boolean; probability: number },
 	groundLimit: number
 ) {
-	if (jumper) {
+	if (jumper.value) {
 		if (!JumperInterval[character.uid]) {
 			JumperInterval[character.uid] = setInterval(() => {
-				aleatoryJump(character, 6, groundLimit);
+				aleatoryJump(character, 6, groundLimit, jumper.probability);
 			}, Constants.JUMPER_INTERVAL);
 		}
 	}

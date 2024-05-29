@@ -1,7 +1,9 @@
 import { Assets } from "pixi.js";
 
 export async function loadContent(spriteImages: string[]) {
+	const sprites=[]
 	for (const image of spriteImages) {
-		await Assets.load(image);
+		sprites.push(await Assets.load(image));
 	}
+	await Promise.all(sprites);
 }
