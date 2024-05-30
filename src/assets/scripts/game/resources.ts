@@ -9,6 +9,7 @@ import filledHeart1 from "../../img/world/Tiles/tile_0044.png";
 import emptyHeart1 from "../../img/world/Tiles/tile_0046.png";
 import finalSceneImg from "../../img/fondo para escena final.jpg";
 import platformImg1 from "../../img/world/Tiles/tile_0029.png";
+import diamondImg from "../../img/world/Tiles/tile_0067.png";
 
 
 // enemySprites
@@ -16,6 +17,25 @@ import slimeenemyImg1 from "../../img/personajes/mounstros/slime/slime1.png";
 import slimeenemyImg2 from "../../img/personajes/mounstros/slime/slime7.png";
 import slimeenemyJumpImg1 from "../../img/personajes/mounstros/slime/slime4.png";
 import slimeenemyJumpImg2 from "../../img/personajes/mounstros/slime/slime3.png";
+
+import ojoMalvadoimg1 from "../../img/personajes/mounstros/ojo malvado/ojo-0002.png"
+import ojoMalvadoimg2 from "../../img/personajes/mounstros/ojo malvado/ojo-0003.png"
+import ojoMalvadoimg3 from "../../img/personajes/mounstros/ojo malvado/ojo-0004.png"
+import ojoMalvadoimg4 from "../../img/personajes/mounstros/ojo malvado/ojo-0005.png"
+
+import alien1Sprite1 from "../../img/personajes/mounstros/aliens/tile_0000.png";
+import alien1Sprite2 from "../../img/personajes/mounstros/aliens/tile_0001.png";
+
+import alien2Sprite3 from "../../img/personajes/mounstros/aliens/tile_0002.png";
+import alien2Sprite4 from "../../img/personajes/mounstros/aliens/tile_0003.png";
+
+import alien3Sprite5 from "../../img/personajes/mounstros/aliens/tile_0004.png";
+import alien3Sprite6 from "../../img/personajes/mounstros/aliens/tile_0005.png";
+
+import alien4Sprite7 from "../../img/personajes/mounstros/aliens/tile_0006.png";
+import alien4Sprite8 from "../../img/personajes/mounstros/aliens/tile_0007.png";
+
+
 
 //quiet
 import characterImg1 from "../../img/personajes/main-character/estatico/esposo estatico1.png";
@@ -28,6 +48,7 @@ import WcharacterImg1 from "../../img/personajes/main-character/caminando/esposo
 import WcharacterImg2 from "../../img/personajes/main-character/caminando/esposo caminando2.png";
 import WcharacterImg3 from "../../img/personajes/main-character/caminando/esposo caminando3.png";
 import WcharacterImg4 from "../../img/personajes/main-character/caminando/esposo caminando4.png";
+
 
 //jump
 import mainCHjumpImg1 from "../../img/personajes/main-character/saltando/esposo saltando3.png";
@@ -44,6 +65,16 @@ import manScene2 from "../../scenes/main-character/frame_1_delay-0.14s.png";
 import manScene3 from "../../scenes/main-character/frame_2_delay-0.16s.png";
 import manScene4 from "../../scenes/main-character/frame_3_delay-0.14s.png";
 import manScene5 from "../../scenes/main-character/frame_4_delay-0.16s.png";
+
+import girlScene1 from "../..//img/personajes/misa animacion/misa estatica1.png";
+import girlScene2 from "../..//img/personajes/misa animacion/misa estatica2.png";
+import girlScene3 from "../..//img/personajes/misa animacion/misa estatica3.png";
+import girlScene4 from "../..//img/personajes/misa animacion/misa estatica4.png";
+
+import villain1Img from "../../img/personajes/villano animacion/malo estatico1.png";
+import villain2Img from "../../img/personajes/villano animacion/malo estatico2.png";
+import villain3Img from "../../img/personajes/villano animacion/malo estatico3.png";
+import villain4Img from "../../img/personajes/villano animacion/malo estatico4.png";
 
 import enemyScene1 from "../../scenes/enamy/frame_0_delay-0.2s.png";
 import enemyScene2 from "../../scenes/enamy/frame_1_delay-0.2s.png";
@@ -66,6 +97,7 @@ export const filledHeart = filledHeart1;
 export const emptyHeart = emptyHeart1;
 export const finalSceneImg1 = finalSceneImg;
 export const platformImg = platformImg1;
+export const diamondImg1 = diamondImg;
 
 // character sprites
 export const spriteImages = [
@@ -87,6 +119,15 @@ export const slimeenemyJSprites = [slimeenemyJumpImg1, slimeenemyJumpImg2];
 export const mangif = [manScene1, manScene2, manScene3, manScene4, manScene5];
 export const womangif = [womanScene1, womanScene2, womanScene3, womanScene4];
 export const enemygif = [enemyScene1, enemyScene2, enemyScene3, enemyScene4];
+export const ojoMalvadoSprites = [ojoMalvadoimg1, ojoMalvadoimg2, ojoMalvadoimg3, ojoMalvadoimg4];
+export const alien1Sprites=[alien1Sprite1,alien1Sprite2]
+export const alien2Sprites=[alien2Sprite3,alien2Sprite4]
+export const alien3Sprites=[alien3Sprite5,alien3Sprite6]
+export const alien4Sprites=[alien4Sprite7,alien4Sprite8]
+export const woman=[girlScene1,girlScene2,girlScene3,girlScene4]
+export const villain=[villain1Img,villain2Img,villain3Img,villain4Img]
+
+
 
 //filters
 

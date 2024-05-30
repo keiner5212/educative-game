@@ -9,9 +9,9 @@ import {
 import { animateSmoothsprite, updateCharacterSprite } from "./animations";
 import {
 	JumperInterval,
+	final,
 	ground,
 	isTouchingGround,
-	isTouchingPlatform,
 	keys,
 	onRiddleDialog,
 	speedX,
@@ -30,7 +30,7 @@ import {
 	startMovementRight,
 } from "./movement";
 import { Constants } from "../../constants";
-import { enemyCollector, groundCollector, platformCollector } from "./spriteCollectors";
+import { enemyCollector, groundCollector } from "./spriteCollectors";
 import { DetectColision, DetectJump, getRamdomRiddle } from "./utils";
 import { dialogImg, emptyHeart, filledHeart, redFilter } from "../resources";
 import { playSound } from "./music";
@@ -65,6 +65,7 @@ export async function CreateSprite(
 		yInterval[character.uid] = 1;
 		lifesLeft[character.uid] = Constants.INITIAL_LIFES;
 		setInterval(() => {
+			if (final[0]) return;
 			const isTouching = groundCollector.some((c) =>
 				DetectColision(character, c, 5, 15)
 			);
@@ -72,15 +73,7 @@ export async function CreateSprite(
 		}, 40);
 
 		setInterval(() => {
-			const isTouching = platformCollector.some((c) =>
-				// DetectColision(character, c, 5, 15)
-				DetectJump(character, c, -20)
-			);
-			isTouchingPlatform[character.uid] = isTouching;
-		}, 40);
-
-
-		setInterval(() => {
+			if (final[0]) return;
 			enemyCollector.forEach(async (enemy) => {
 				if (DetectJump(character, enemy)) {
 					await animateDeath(enemy, app);
@@ -93,7 +86,7 @@ export async function CreateSprite(
 					}
 				}
 			});
-		}, 40);
+		}, 20);
 	} else if (enemy && app) {
 		enemyCollector.push(character);
 	}
@@ -139,9 +132,8 @@ export function characterMovement(
 	});
 
 	function updateCharacterMovement(character: Sprite) {
-		if (onRiddleDialog[character.uid]) {
-			return;
-		}
+		if (final[0]) return;
+		if (onRiddleDialog[character.uid]) return;
 		if (
 			(keys["ArrowRight"] || keys["d"]) &&
 			!(keys["ArrowLeft"] || keys["a"])
@@ -334,9 +326,8 @@ export async function animateDeath(character: Sprite, app: Application) {
 
 let loosingLife = false;
 export async function animateDeathPlayer(character: Sprite, app: Application) {
-	if (loosingLife) {
-		return;
-	}
+	if (loosingLife) return;
+	if (final[0]) return;
 	loosingLife = true;
 	onRiddleDialog[character.uid] = true;
 	playSound("player-death");

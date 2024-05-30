@@ -1,6 +1,7 @@
 import { Application, Assets, Container, Sprite } from "pixi.js";
 import {
 	fallingInterval,
+	final,
 	ground,
 	isTouchingGround,
 	speedX,
@@ -71,6 +72,7 @@ export function Characterphysics(
 			character.y > characterGround + 200 &&
 			!loosingLife
 		) {
+			if (final[0]) return;
 			loosingLife = true;
 			setTimeout(async () => {
 				character.x = Constants.CH_INITIAL_X;

@@ -1,8 +1,13 @@
 import {
 	JspriteImages,
 	WspriteImages,
+	alien1Sprites,
+	alien2Sprites,
+	alien3Sprites,
+	alien4Sprites,
 	backgroundImg,
 	dialogImg,
+	diamondImg1,
 	emptyHeart,
 	enemygif,
 	filledHeart,
@@ -11,21 +16,24 @@ import {
 	groundTile,
 	mangif,
 	noiseFilter,
+	ojoMalvadoSprites,
 	platformImg,
 	slimeenemyJSprites,
 	slimeenemySprites,
 	spriteImages,
 	subgroundTile,
 	subwaterImg1,
+	villain,
 	waterImg1,
+	woman,
 	womangif,
 } from "./resources";
-import { loadContent } from "./motor/utils";
+import { DetectColision, loadContent } from "./motor/utils";
 import {
 	Characterphysics,
+	SetBackground,
 	SetBackgroundRepeating,
 	SetDoubleGround,
-	SetGround,
 	physics,
 	setupApp,
 } from "./motor/app";
@@ -37,6 +45,7 @@ import {
 } from "./motor/characters";
 import {
 	SepiaOldFilter,
+	animateDiamondSprite,
 	animateNoise,
 	animateSmoothsprite,
 	deleteAnimation,
@@ -48,8 +57,8 @@ import { Constants } from "../constants";
 import { closeModal } from "../utils";
 import { Application, Container } from "pixi.js";
 import { createButtonAt, showDialog } from "./motor/dialog";
-import { wallRight } from "./motor/variables";
-import { platformCollector } from "./motor/spriteCollectors";
+import { final, wallLeft, wallRight } from "./motor/variables";
+import { enemyCollector, groundCollector } from "./motor/spriteCollectors";
 
 const esceneBg = new Container();
 export async function CreateGame() {
@@ -72,6 +81,14 @@ export async function CreateGame() {
 		emptyHeart,
 		finalSceneImg1,
 		platformImg,
+		diamondImg1,
+		...ojoMalvadoSprites,
+		...alien1Sprites,
+		...alien2Sprites,
+		...alien3Sprites,
+		...alien4Sprites,
+		...woman,
+		...villain,
 	]);
 
 	const app = await setupApp(60, window.innerWidth, window.innerHeight);
@@ -270,14 +287,194 @@ async function createPlayable(app: Application) {
 	physics(slime, app, Constants.GROUND + 15);
 	app.stage.addChild(slime);
 
-	await SetGround(
+	// await SetGround(
+	// 	esceneBg,
+	// 	platformImg,
+	// 	platformCollector,
+	// 	900,
+	// 	2,
+	// 	400,
+	// 	600,
+	// 	true
+	// );
+
+	const diamond = await CreateSprite(
+		[diamondImg1],
+		500,
+		Constants.GROUND,
+		30,
+		30,
+		false,
+		app,
+		false
+	);
+	let ejecutado = false;
+
+	app.ticker.add(async () => {
+		const colision = DetectColision(character, diamond);
+		animateDiamondSprite(diamond);
+
+		if (colision) {
+			if (!ejecutado) {
+				ejecutado = true;
+				app.stage.removeChild(diamond);
+				diamond.x = -100;
+				slime.x = -100;
+				app.stage.removeChild(slime);
+				while (groundCollector.length > 0) {
+					groundCollector.pop();
+				}
+				await level2(app, character);
+			} else {
+				return;
+			}
+		}
+	});
+
+	app.stage.addChild(diamond);
+}
+
+async function level2(app: Application, character: any) {
+	character.x = Constants.CH_INITIAL_X;
+	character.y = Constants.CH_INITIAL_Y;
+
+	await SetDoubleGround(
 		esceneBg,
-		platformImg,
-		platformCollector,
-		900,
+		[subgroundTile, groundTile],
 		2,
-		400,
-		600,
+		5,
+		0,
+		wallRight,
 		true
 	);
+
+	const ojoMalvdo = await CreateSprite(
+		ojoMalvadoSprites,
+		700,
+		Constants.GROUND + 20,
+		undefined,
+		undefined,
+		false,
+		app,
+		true
+	);
+	enemyMovement(
+		ojoMalvdo,
+		character,
+		app,
+		-1,
+		{ value: false, probability: 0 },
+		false,
+		Constants.GROUND + 20,
+		300,
+		wallRight
+	);
+	physics(ojoMalvdo, app, Constants.GROUND + 20);
+	enemyCollector.push(ojoMalvdo);
+	app.stage.addChild(ojoMalvdo);
+
+	const aliensprites = [
+		alien1Sprites,
+		alien2Sprites,
+		alien3Sprites,
+		alien4Sprites,
+	];
+	const randomChoice = Math.floor(Math.random() * 4);
+	const alien = await CreateSprite(
+		aliensprites[randomChoice],
+		600,
+		Constants.GROUND + 20,
+		50,
+		50,
+		false,
+		app,
+		false
+	);
+	enemyMovement(
+		alien,
+		character,
+		app,
+		-1,
+		{ value: false, probability: 0 },
+		true,
+		Constants.GROUND,
+		wallLeft,
+		wallRight - 600
+	);
+	physics(alien, app, Constants.GROUND);
+
+	enemyCollector.push(alien);
+	app.stage.addChild(alien);
+
+	const diamond = await CreateSprite(
+		[diamondImg1],
+		900,
+		Constants.GROUND,
+		30,
+		40,
+		false,
+		app,
+		false
+	);
+
+	let ejecutado = false;
+	app.ticker.add(async () => {
+		const colision = DetectColision(character, diamond);
+		animateDiamondSprite(diamond);
+
+		if (colision) {
+			if (!ejecutado) {
+				ejecutado = true;
+				app.stage.removeChild(character);
+				app.stage.removeChild(diamond);
+				app.stage.removeChild(alien);
+				app.stage.removeChild(ojoMalvdo);
+				final[0] = true;
+				while (groundCollector.length > 0) {
+					groundCollector.pop();
+				}
+				diamond.x = -100;
+				await scinematicEnd(app);
+			}
+		}
+	});
+
+	app.stage.addChild(diamond);
+}
+
+async function scinematicEnd(app: Application) {
+	SetBackground(app, finalSceneImg1);
+
+	const character = await CreateSprite(
+		spriteImages,
+		(window.innerWidth * 3) / 4,
+		(window.innerHeight * 3) / 4,
+		300,
+		300
+	);
+	
+	character.scale.x = -1;
+	character.width = 300;
+
+	app.stage.addChild(character);
+	const character2 = await CreateSprite(
+		woman,
+		200,
+		(window.innerHeight * 3) / 4 - 80,
+		300,
+		300
+	);
+
+	app.stage.addChild(character);
+	const character3 = await CreateSprite(
+		villain,
+		200,
+		window.innerHeight / 2 -150,
+		300,
+		300
+	);
+
+	app.stage.addChild(character);
+	app.stage.addChild(character2);
+	app.stage.addChild(character3);
 }

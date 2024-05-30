@@ -164,3 +164,12 @@ export function SepiaOldFilter() {
 	const noiseValue = Math.sin(time * 0.001) * 0.07 + 0.3;
 	filmSepiaFilter.vignetting = noiseValue;
 }
+
+
+export function animateDiamondSprite(
+	sprite: Sprite){
+		const time = Date.now();
+		const noiseValue = Math.sin(time * 0.01) * 0.04 + 1;
+		sprite.width=sprite.width*noiseValue
+		sprite.height=sprite.height*noiseValue
+	}

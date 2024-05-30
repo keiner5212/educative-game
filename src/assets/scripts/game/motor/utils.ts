@@ -44,8 +44,9 @@ export function DetectJump(spriteA: Sprite, spriteB: Sprite, collisionDepthy: nu
 	const isAbove = aBottom <= bTop;
 
 	const isCloseEnoughX = Math.abs(spriteA.x - spriteB.x) <= maxDistanceX;
+	const isCloseEnoughY = Math.abs(spriteA.y - spriteB.y) <= 150;
 
-	return isAbove && isCloseEnoughX && speedY[spriteA.uid] > 0;
+	return isAbove && isCloseEnoughX && speedY[spriteA.uid] > 0 && isCloseEnoughY;
 }
 
 export function getRamdomRiddle() {
