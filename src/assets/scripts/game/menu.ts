@@ -1,6 +1,6 @@
 import { CreateGame } from ".";
 import "../../styles/menu.css";
-import { credits, loader, settings } from "../components/modal";
+import { credits, loader, reglas, settings } from "../components/modal";
 import { openModal, removeBackground } from "../utils";
 import menuImg from "../../img/personajes/villano animacion/UntitledArtwork2 - 1.png";
 
@@ -14,7 +14,7 @@ export function setMenuActions() {
 			.getElementById("play-button")
 			?.addEventListener("click", () => {
 				removeMenu();
-				removeListeners()
+				removeListeners();
 				removeBackground();
 				loader();
 				openModal();
@@ -25,7 +25,7 @@ export function setMenuActions() {
 			.getElementById("settings-button")
 			?.addEventListener("click", () => {
 				settings();
-				removeListeners()
+				removeListeners();
 				openModal();
 			});
 
@@ -33,7 +33,14 @@ export function setMenuActions() {
 			.getElementById("credits-button")
 			?.addEventListener("click", () => {
 				credits();
-				removeListeners()
+				removeListeners();
+				openModal();
+			});
+		document
+			.getElementById("reglas-button")
+			?.addEventListener("click", () => {
+				reglas();
+				removeListeners();
 				openModal();
 			});
 	}, 500);
@@ -61,6 +68,12 @@ function removeListeners() {
 			credits();
 			openModal();
 		});
+	document
+		.getElementById("reglas-button")
+		?.removeEventListener("click", () => {
+			reglas();
+			openModal();
+		});
 }
 
 export function ShowMenu() {
@@ -74,6 +87,7 @@ export function ShowMenu() {
                 <button id="play-button" class="button is-success">Play</button>
                 <button id="settings-button" class="button is-info">Settings</button>
                 <button id="credits-button" class="button is-warning">Credits</button>
+                <button id="reglas-button" class="button is-warning">Rules</button>
             </div>
         </div>
     `;

@@ -287,16 +287,6 @@ async function createPlayable(app: Application) {
 	physics(slime, app, Constants.GROUND + 15);
 	app.stage.addChild(slime);
 
-	// await SetGround(
-	// 	esceneBg,
-	// 	platformImg,
-	// 	platformCollector,
-	// 	900,
-	// 	2,
-	// 	400,
-	// 	600,
-	// 	true
-	// );
 
 	const diamond = await CreateSprite(
 		[diamondImg1],
@@ -384,8 +374,8 @@ async function level2(app: Application, character: any) {
 		aliensprites[randomChoice],
 		600,
 		Constants.GROUND + 20,
-		50,
-		50,
+		30,
+		40,
 		false,
 		app,
 		false

@@ -220,3 +220,49 @@ export function loader() {
 	</div>
 	`;
 }
+
+export function reglas() {
+	const wraper = document.getElementById("root-wraper");
+	if (!wraper) return;
+	wraper.innerHTML += `
+    <div class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Rules</p>
+                <button id="close-modal" class="delete" aria-label="close"><i class="fa-regular fa-circle-xmark"></i></button>
+            </header>
+            <section class="modal-card-body">
+			<ul>
+			<li>si desea revivir el jugador necesitará responder una adivinanza o simplemente empezar de nuevo pero con una vida menos</li>
+			<li>la vida maxima es de 4</li>
+			<li>para matar a un personaje salta sobre el</li>
+			</ul>
+            </section>
+            <footer class="modal-card-foot">
+                <button id="modal-accept-button" class="button is-success">OK</button>
+                <button id="modal-decline-button" class="button">Close</button>
+            </footer>
+        </div>
+    </div>
+`;
+
+	document
+		.getElementById("modal-decline-button")
+		?.addEventListener("click", () => {
+			closeModal();
+			setMenuActions();
+		});
+
+	document.getElementById("close-modal")?.addEventListener("click", () => {
+		closeModal();
+		setMenuActions();
+	});
+
+	document
+		.getElementById("modal-accept-button")
+		?.addEventListener("click", () => {
+			closeModal();
+			setMenuActions();
+		});
+}
