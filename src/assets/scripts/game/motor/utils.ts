@@ -32,13 +32,13 @@ export function DetectColision(
 	return aRight > bLeft && aLeft < bRight && aBottom > bTop && aTop < bBottom;
 }
 
-export function DetectJump(spriteA: Sprite, spriteB: Sprite): boolean {
+export function DetectJump(spriteA: Sprite, spriteB: Sprite, collisionDepthy: number = 5): boolean {
 	const maxDistanceX = 50;
 
 	const aBounds = spriteA.getBounds();
 	const bBounds = spriteB.getBounds();
 
-	const aBottom = aBounds.y + aBounds.height - 5;
+	const aBottom = aBounds.y + aBounds.height - collisionDepthy;
 	const bTop = bBounds.y;
 
 	const isAbove = aBottom <= bTop;

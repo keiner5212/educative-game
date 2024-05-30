@@ -11,7 +11,7 @@ export class Constants {
 	public static readonly JUMPER_INTERVAL = 1000;
 	public static readonly ANIMATION_UPDATE = 100;
 	public static readonly MOVEMENT_UPDATE = 95;
-	public static readonly INITIAL_LIFES = 3;
+	public static readonly INITIAL_LIFES = 4;
 	public static readonly HEART_SIZE = 25;
 	public static readonly FONT_FAMILY = "Georgia";
 	public static readonly CH_INITIAL_X = 100;

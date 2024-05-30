@@ -92,7 +92,7 @@ export async function CreateGame() {
 		[subwaterImg1, waterImg1],
 		2,
 		15,
-		wallRight - 595
+		wallRight - 600
 	);
 
 	esceneBg.filters = [filmSepiaFilter, noiseFilter];
@@ -274,7 +274,7 @@ async function createPlayable(app: Application) {
 		esceneBg,
 		platformImg,
 		platformCollector,
-		800,
+		900,
 		2,
 		400,
 		600,

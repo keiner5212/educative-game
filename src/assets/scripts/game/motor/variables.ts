@@ -11,6 +11,7 @@ export const animating: { [characterUID: number]: string } = {};
 export const isQuietInterval: { [characterUID: number]: number } = {};
 export const JumperInterval: { [characterUID: number]: number } = {};
 export const isTouchingGround: { [characterUID: number]: boolean } = {};
+export const isTouchingPlatform: { [characterUID: number]: boolean } = {};
 export const tickers: { [key: string]: TickerCallback<any> } = {};
 export const onRiddleDialog: { [characterUID: number]: boolean }={}
 

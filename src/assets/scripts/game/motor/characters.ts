@@ -11,6 +11,7 @@ import {
 	JumperInterval,
 	ground,
 	isTouchingGround,
+	isTouchingPlatform,
 	keys,
 	onRiddleDialog,
 	speedX,
@@ -29,7 +30,7 @@ import {
 	startMovementRight,
 } from "./movement";
 import { Constants } from "../../constants";
-import { enemyCollector, groundCollector } from "./spriteCollectors";
+import { enemyCollector, groundCollector, platformCollector } from "./spriteCollectors";
 import { DetectColision, DetectJump, getRamdomRiddle } from "./utils";
 import { dialogImg, emptyHeart, filledHeart, redFilter } from "../resources";
 import { playSound } from "./music";
@@ -69,6 +70,15 @@ export async function CreateSprite(
 			);
 			isTouchingGround[character.uid] = isTouching;
 		}, 40);
+
+		setInterval(() => {
+			const isTouching = platformCollector.some((c) =>
+				// DetectColision(character, c, 5, 15)
+				DetectJump(character, c, -20)
+			);
+			isTouchingPlatform[character.uid] = isTouching;
+		}, 40);
+
 
 		setInterval(() => {
 			enemyCollector.forEach(async (enemy) => {
