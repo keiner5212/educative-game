@@ -42,7 +42,7 @@ export async function SetBackground(app: Application, b_img: string) {
 	app.stage.addChild(background);
 }
 
-let lifesLeft: number = Constants.INITIAL_LIFES;
+export const lifesLeft: { [key: string]: number } = {};
 let loosingLife = false;
 let playingSound = false;
 
@@ -56,6 +56,7 @@ export function Characterphysics(
 			!isTouchingGround[character.uid] && !yInterval[character.uid];
 
 		if (character.y < characterGround && speedY[character.uid] !== 0) {
+			
 			if (character.y + speedY[character.uid] < characterGround) {
 				character.y += speedY[character.uid];
 			} else {
@@ -75,15 +76,17 @@ export function Characterphysics(
 			setTimeout(async () => {
 				character.x = Constants.CH_INITIAL_X;
 				character.y = Constants.CH_INITIAL_Y;
-
-				const heartsUI = await createLifesContainer(--lifesLeft, app);
+				const heartsUI = await createLifesContainer(
+					--lifesLeft[character.uid],
+					app
+				);
 
 				clearInterval(fallingInterval[character.uid]);
 				delete fallingInterval[character.uid];
 
 				app.stage.addChild(heartsUI);
 
-				if (lifesLeft === 0) {
+				if (lifesLeft[character.uid] <= 0) {
 					if (!playingSound) {
 						playingSound = true;
 						playSound("player-death");
@@ -94,9 +97,9 @@ export function Characterphysics(
 						"Play Again",
 						"Decline",
 						async () => {
-							lifesLeft = Constants.INITIAL_LIFES;
+							lifesLeft[character.uid] = Constants.INITIAL_LIFES;
 							const heartsUI = await createLifesContainer(
-								lifesLeft,
+								lifesLeft[character.uid],
 								app
 							);
 							app.stage.addChild(heartsUI);

@@ -6,7 +6,7 @@ export class Constants {
 	public static readonly GRAVITY = 4;
 	public static readonly MAX_SPEED_X = 5;
 	public static readonly MAX_SPEED_Y = 12;
-	public static readonly ENEMY_MOVE_SPEED = 3;
+	public static readonly ENEMY_MOVE_SPEED = 2;
 	public static readonly GROUND = ground - 82;
 	public static readonly JUMPER_INTERVAL = 1000;
 	public static readonly ANIMATION_UPDATE = 100;

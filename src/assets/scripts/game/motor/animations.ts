@@ -156,7 +156,7 @@ export async function animateSmoothsprite(
 
 export function animateNoise() {
 	const time = Date.now();
-	const noiseValue = Math.sin(time * 0.001) * 0.07 + 0.1;
+	const noiseValue = Math.sin(time * 0.001) * 0.07 + 0.2;
 	noiseFilter.noise = noiseValue;
 }
 export function SepiaOldFilter() {

@@ -46,7 +46,6 @@ import { closeModal } from "../utils";
 import { Application, Container } from "pixi.js";
 import { createButtonAt, showDialog } from "./motor/dialog";
 import { wallRight } from "./motor/variables";
-import { enemyCollector } from "./motor/spriteCollectors";
 
 const esceneBg = new Container();
 export async function CreateGame() {
@@ -99,14 +98,14 @@ export async function CreateGame() {
 	const character = await CreateSprite(
 		mangif,
 		0,
-		window.innerHeight / 2,
+		(window.innerHeight * 3) / 4,
 		400,
 		400
 	);
 
 	app.stage.addChild(character);
 
-	await animateSmoothsprite(character, 200, window.innerHeight / 2);
+	await animateSmoothsprite(character, 200, (window.innerHeight * 3) / 4);
 
 	const dialog1 = await showDialog(
 		dialogImg,
@@ -134,18 +133,18 @@ async function scene2(app: Application) {
 	const woman = await CreateSprite(
 		womangif,
 		0,
-		window.innerHeight / 2,
+		(window.innerHeight * 3) / 4,
 		400,
 		400
 	);
 
 	app.stage.addChild(woman);
-	await animateSmoothsprite(woman, 200, window.innerHeight / 2);
+	await animateSmoothsprite(woman, 200, (window.innerHeight * 3) / 4);
 
 	const enemy = await CreateSprite(
 		enemygif,
 		window.innerWidth,
-		window.innerHeight / 2,
+		(window.innerHeight * 3) / 4,
 		400,
 		400
 	);
@@ -185,14 +184,14 @@ async function scene3(app: Application) {
 	const character = await CreateSprite(
 		mangif,
 		0,
-		window.innerHeight / 2,
+		(window.innerHeight * 3) / 4,
 		400,
 		400
 	);
 
 	app.stage.addChild(character);
 
-	await animateSmoothsprite(character, 200, window.innerHeight / 2);
+	await animateSmoothsprite(character, 200, (window.innerHeight * 3) / 4);
 	const dialog1 = await showDialog(
 		dialogImg,
 		"Ahora tengo que ir en busca de ella.. para recuperar a mi hermosa amada.",
@@ -241,9 +240,13 @@ async function createPlayable(app: Application) {
 	const slime = await CreateSprite(
 		slimeenemySprites,
 		200,
-		Constants.GROUND + 15
+		Constants.GROUND + 15,
+		undefined,
+		undefined,
+		false,
+		app,
+		true
 	);
-	enemyCollector.push(slime);
 	setJumpingAnimations(slime, app, slimeenemyJSprites);
 	setQuietAnimations(slime, app, slimeenemySprites);
 	setMovingAnimations(slime, app, slimeenemySprites);
@@ -253,7 +256,10 @@ async function createPlayable(app: Application) {
 		app,
 		-1,
 		{ value: true, probability: 0.5 },
-		Constants.GROUND + 15
+		false,
+		Constants.GROUND + 15,
+		400,
+		wallRight - 600
 	);
 	physics(slime, app, Constants.GROUND + 15);
 	app.stage.addChild(slime);

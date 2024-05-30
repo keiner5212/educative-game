@@ -32,7 +32,7 @@ export function DetectColision(
 }
 
 export function DetectJump(spriteA: Sprite, spriteB: Sprite): boolean {
-	const maxDistanceX = 20;
+	const maxDistanceX = 50;
 
 	const aBounds = spriteA.getBounds();
 	const bBounds = spriteB.getBounds();

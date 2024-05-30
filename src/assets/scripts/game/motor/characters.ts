@@ -1,7 +1,6 @@
 import {
 	Application,
 	Assets,
-	ColorMatrixFilter,
 	Container,
 	Sprite,
 	Text,
@@ -31,8 +30,11 @@ import {
 import { Constants } from "../../constants";
 import { enemyCollector, groundCollector } from "./spriteCollectors";
 import { DetectColision, DetectJump } from "./utils";
-import { emptyHeart, filledHeart } from "../resources";
+import { emptyHeart, filledHeart, redFilter } from "../resources";
 import { playSound } from "./music";
+import { lifesLeft } from "./app";
+import { createModal } from "../../components/modal";
+import { openModal } from "../../utils";
 
 export async function CreateSprite(
 	initialQuietSprites: string[],
@@ -41,7 +43,8 @@ export async function CreateSprite(
 	height?: number,
 	width?: number,
 	controlled?: boolean,
-	app?: Application
+	app?: Application,
+	enemy?: boolean
 ) {
 	const texture = await Assets.get(initialQuietSprites[0]);
 	const character = new Sprite(texture);
@@ -57,6 +60,7 @@ export async function CreateSprite(
 
 	if (controlled && app) {
 		yInterval[character.uid] = 1;
+		lifesLeft[character.uid] = Constants.INITIAL_LIFES;
 		setInterval(() => {
 			const isTouching = groundCollector.some((c) =>
 				DetectColision(character, c, 5, 15)
@@ -68,9 +72,18 @@ export async function CreateSprite(
 			enemyCollector.forEach(async (enemy) => {
 				if (DetectJump(character, enemy)) {
 					await animateDeath(enemy, app);
+				} else if (DetectColision(character, enemy, 5, 15)) {
+					await animateDeathPlayer(character, app);
+					enemy.x += 800;
+
+					if (lifesLeft[character.uid] <= 0) {
+						app.stage.removeChild(enemy);
+					}
 				}
 			});
 		}, 40);
+	} else if (enemy && app) {
+		enemyCollector.push(character);
 	}
 
 	return character;
@@ -144,7 +157,10 @@ export function enemyMovement(
 	app: Application,
 	initialDir: number,
 	jumper: { value: boolean; probability: number },
-	groundLimit: number
+	chaser: boolean,
+	groundLimit: number,
+	startx: number = wallLeft,
+	endx: number = wallRight - 200
 ) {
 	if (jumper.value) {
 		if (!JumperInterval[character.uid]) {
@@ -153,37 +169,79 @@ export function enemyMovement(
 			}, Constants.JUMPER_INTERVAL);
 		}
 	}
+	let riggthTouched = false;
+	let leftTouched = false;
 	app.ticker.add(() => {
-		if (character.x < player.x && character.x < wallRight) {
-			startMovementRight(
-				character,
-				Constants.ENEMY_MOVE_SPEED,
-				initialDir
-			);
-			if (xIntervalLeft[character.uid]) {
-				setTimeout(() => {
-					clearInterval(xIntervalLeft[character.uid]);
-					delete xIntervalLeft[character.uid];
-					speedX[character.uid] = 0;
-				}, 50);
+		if (chaser) {
+			if (character.x < player.x && character.x < endx) {
+				startMovementRight(
+					character,
+					Constants.ENEMY_MOVE_SPEED,
+					initialDir
+				);
+				if (xIntervalLeft[character.uid]) {
+					setTimeout(() => {
+						clearInterval(xIntervalLeft[character.uid]);
+						delete xIntervalLeft[character.uid];
+						speedX[character.uid] = 0;
+					}, 50);
+				}
+			} else if (character.x > player.x && character.x > startx) {
+				startMovementLeft(
+					character,
+					-Constants.ENEMY_MOVE_SPEED,
+					-initialDir
+				);
+				if (xIntervalRight[character.uid]) {
+					setTimeout(() => {
+						clearInterval(xIntervalRight[character.uid]);
+						delete xIntervalRight[character.uid];
+						speedX[character.uid] = 0;
+					}, 50);
+				}
 			}
-		} else if (character.x > player.x && character.x > wallLeft) {
-			startMovementLeft(
-				character,
-				-Constants.ENEMY_MOVE_SPEED,
-				-initialDir
-			);
-			if (xIntervalRight[character.uid]) {
-				setTimeout(() => {
-					clearInterval(xIntervalRight[character.uid]);
-					delete xIntervalRight[character.uid];
-					speedX[character.uid] = 0;
-				}, 50);
+		} else {
+			console.log(character.x > startx);
+			console.log(character.x - startx);
+			if (character.x <= endx && !riggthTouched) {
+				if (endx - character.x < 5) {
+					riggthTouched = true;
+					leftTouched = false;
+				}
+
+				startMovementRight(
+					character,
+					Constants.ENEMY_MOVE_SPEED,
+					initialDir
+				);
+				if (xIntervalLeft[character.uid]) {
+					setTimeout(() => {
+						clearInterval(xIntervalLeft[character.uid]);
+						delete xIntervalLeft[character.uid];
+						speedX[character.uid] = 0;
+					}, 50);
+				}
+			} else if (character.x > startx && !leftTouched) {
+				if (character.x - startx < 5) {
+					leftTouched = true;
+					riggthTouched = false;
+				}
+				startMovementLeft(
+					character,
+					-Constants.ENEMY_MOVE_SPEED,
+					-initialDir
+				);
+				if (xIntervalRight[character.uid]) {
+					setTimeout(() => {
+						clearInterval(xIntervalRight[character.uid]);
+						delete xIntervalRight[character.uid];
+						speedX[character.uid] = 0;
+					}, 50);
+				}
 			}
 		}
 	});
 }
-
 let lifeContainer: Container;
 
 export async function createLifesContainer(
@@ -244,10 +302,7 @@ export async function animateDeath(character: Sprite, app: Application) {
 		playingSound = true;
 		playSound("monster-death");
 	}
-	const redFilter = new ColorMatrixFilter();
-	redFilter.greyscale(0.5, false);
-	redFilter.brightness(1.5, false);
-	redFilter.tint(0xff0000, false);
+
 	character.filters = [redFilter];
 
 	await animateSmoothsprite(
@@ -261,5 +316,53 @@ export async function animateDeath(character: Sprite, app: Application) {
 
 	setTimeout(() => {
 		app.stage.removeChild(character);
+	}, 1000);
+}
+
+let loosingLife = false;
+export async function animateDeathPlayer(character: Sprite, app: Application) {
+	if (loosingLife) {
+		return;
+	}
+	loosingLife = true;
+
+	playSound("player-death");
+
+	character.filters = [redFilter];
+
+	setTimeout(async () => {
+		const heartsUI = await createLifesContainer(
+			--lifesLeft[character.uid],
+			app
+		);
+
+		app.stage.addChild(heartsUI);
+
+		if (lifesLeft[character.uid] <= 0) {
+			createModal(
+				"Game Over",
+				"You lost",
+				"Play Again",
+				"Decline",
+				async () => {
+					lifesLeft[character.uid] = Constants.INITIAL_LIFES;
+					const heartsUI = await createLifesContainer(
+						lifesLeft[character.uid],
+						app
+					);
+					app.stage.addChild(heartsUI);
+				},
+				() => {
+					location.reload();
+				}
+			);
+			openModal();
+		}
+
+		character.x = Constants.CH_INITIAL_X;
+		character.y = Constants.CH_INITIAL_Y;
+		character.filters = [];
+
+		loosingLife = false;
 	}, 1000);
 }

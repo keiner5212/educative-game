@@ -50,7 +50,7 @@ import enemyScene4 from "../../scenes/enamy/frame_3_delay-0.19s.png";
 
 //filters
 import { OldFilmFilter } from "pixi-filters";
-import { NoiseFilter } from "pixi.js";
+import { ColorMatrixFilter, NoiseFilter } from "pixi.js";
 
 // sprites
 
@@ -88,8 +88,14 @@ export const enemygif = [enemyScene1, enemyScene2, enemyScene3, enemyScene4];
 
 export const filmSepiaFilter = new OldFilmFilter({
 	sepia: 0.4,
+	noise: 0.4,
 	scratch: 0,
 });
+
+export const redFilter = new ColorMatrixFilter();
+	redFilter.greyscale(0.5, false);
+	redFilter.brightness(1.5, false);
+	redFilter.tint(0xff0000, false);
 
 export const noiseFilter = new NoiseFilter();
 
