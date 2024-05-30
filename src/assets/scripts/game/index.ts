@@ -46,6 +46,7 @@ import { closeModal } from "../utils";
 import { Application, Container } from "pixi.js";
 import { createButtonAt, showDialog } from "./motor/dialog";
 import { wallRight } from "./motor/variables";
+import { enemyCollector } from "./motor/spriteCollectors";
 
 const esceneBg = new Container();
 export async function CreateGame() {
@@ -92,7 +93,7 @@ export async function CreateGame() {
 	esceneBg.filters = [filmSepiaFilter, noiseFilter];
 	app.ticker.add(SepiaOldFilter);
 	app.ticker.add(animateNoise);
-	
+
 	closeModal();
 
 	const character = await CreateSprite(
@@ -223,7 +224,8 @@ async function createPlayable(app: Application) {
 		Constants.CH_INITIAL_Y,
 		undefined,
 		undefined,
-		true
+		true,
+		app
 	);
 
 	setJumpingAnimations(character, app, JspriteImages);
@@ -241,6 +243,7 @@ async function createPlayable(app: Application) {
 		200,
 		Constants.GROUND + 15
 	);
+	enemyCollector.push(slime);
 	setJumpingAnimations(slime, app, slimeenemyJSprites);
 	setQuietAnimations(slime, app, slimeenemySprites);
 	setMovingAnimations(slime, app, slimeenemySprites);

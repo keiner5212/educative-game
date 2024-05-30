@@ -5,6 +5,7 @@ import {
 	isTouchingGround,
 	speedX,
 	speedY,
+	tickers,
 	wallLeft,
 	wallRight,
 	yInterval,
@@ -15,6 +16,7 @@ import { Constants } from "../../constants";
 import { createLifesContainer } from "./characters";
 import { createModal } from "../../components/modal";
 import { openModal } from "../../utils";
+import { playSound } from "./music";
 
 export async function setupApp(
 	fps: number,
@@ -42,13 +44,14 @@ export async function SetBackground(app: Application, b_img: string) {
 
 let lifesLeft: number = Constants.INITIAL_LIFES;
 let loosingLife = false;
+let playingSound = false;
 
 export function Characterphysics(
 	character: Sprite,
 	app: Application,
 	characterGround: number = ground - 1
 ) {
-	app.ticker.add(async () => {
+	const update = async () => {
 		const isfalling =
 			!isTouchingGround[character.uid] && !yInterval[character.uid];
 
@@ -81,6 +84,10 @@ export function Characterphysics(
 				app.stage.addChild(heartsUI);
 
 				if (lifesLeft === 0) {
+					if (!playingSound) {
+						playingSound = true;
+						playSound("player-death");
+					}
 					createModal(
 						"Game Over",
 						"You lost",
@@ -137,7 +144,9 @@ export function Characterphysics(
 		} else {
 			speedX[character.uid] = 0;
 		}
-	});
+	};
+	tickers[character.uid] = update;
+	app.ticker.add(update);
 }
 
 export function physics(
@@ -145,7 +154,7 @@ export function physics(
 	app: Application,
 	characterGround: number = ground - 1
 ) {
-	app.ticker.add(() => {
+	const update = () => {
 		if (character.y <= characterGround && speedY[character.uid] !== 0) {
 			if (character.y + speedY[character.uid] < characterGround) {
 				character.y += speedY[character.uid];
@@ -168,7 +177,9 @@ export function physics(
 		} else {
 			speedX[character.uid] = 0;
 		}
-	});
+	};
+	tickers[character.uid] = update;
+	app.ticker.add(update);
 }
 
 export async function SetBackgroundRepeating(c: Container<any>, b_img: string) {

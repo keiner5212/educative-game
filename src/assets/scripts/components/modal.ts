@@ -63,7 +63,7 @@ export function settings() {
                 <section class="modal-card-body">
 
                     <div class="PB-range-slider-div">
-                        <label for="volume-range">Volume: </label>
+                        <label for="volume-range">Volume (music): </label>
                         <input type="range" min="0" max="100" value=${localStorage.getItem(
 							"volume"
 						)} class="PB-range-slider" id="volume-range">

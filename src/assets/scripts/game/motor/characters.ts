@@ -1,12 +1,13 @@
 import {
 	Application,
 	Assets,
+	ColorMatrixFilter,
 	Container,
 	Sprite,
 	Text,
 	TextStyle,
 } from "pixi.js";
-import { updateCharacterSprite } from "./animations";
+import { animateSmoothsprite, updateCharacterSprite } from "./animations";
 import {
 	JumperInterval,
 	ground,
@@ -14,6 +15,7 @@ import {
 	keys,
 	speedX,
 	speedY,
+	tickers,
 	wallLeft,
 	wallRight,
 	xIntervalLeft,
@@ -27,9 +29,10 @@ import {
 	startMovementRight,
 } from "./movement";
 import { Constants } from "../../constants";
-import { groundCollector } from "./spriteCollectors";
-import { DetectColision } from "./utils";
+import { enemyCollector, groundCollector } from "./spriteCollectors";
+import { DetectColision, DetectJump } from "./utils";
 import { emptyHeart, filledHeart } from "../resources";
+import { playSound } from "./music";
 
 export async function CreateSprite(
 	initialQuietSprites: string[],
@@ -37,7 +40,8 @@ export async function CreateSprite(
 	y?: number,
 	height?: number,
 	width?: number,
-	controlled?: boolean
+	controlled?: boolean,
+	app?: Application
 ) {
 	const texture = await Assets.get(initialQuietSprites[0]);
 	const character = new Sprite(texture);
@@ -47,17 +51,25 @@ export async function CreateSprite(
 	character.height = height ?? Constants.CHARACTER_HEIGHT;
 	character.x = x ?? window.innerWidth / 2;
 	character.y = y ?? ground - 1;
-	speedY[character.uid] = Constants.GRAVITY*3;
+	speedY[character.uid] = Constants.GRAVITY * 3;
 	speedX[character.uid] = 0;
 	updateCharacterSprite(character, initialQuietSprites, "quiet");
 
-	if (controlled) {
+	if (controlled && app) {
 		yInterval[character.uid] = 1;
 		setInterval(() => {
 			const isTouching = groundCollector.some((c) =>
 				DetectColision(character, c, 5, 15)
 			);
 			isTouchingGround[character.uid] = isTouching;
+		}, 40);
+
+		setInterval(() => {
+			enemyCollector.forEach(async (enemy) => {
+				if (DetectJump(character, enemy)) {
+					await animateDeath(enemy, app);
+				}
+			});
 		}, 40);
 	}
 
@@ -224,4 +236,30 @@ export async function createLifesContainer(
 
 	lifeContainer = container;
 	return container;
+}
+
+let playingSound = false;
+export async function animateDeath(character: Sprite, app: Application) {
+	if (!playingSound) {
+		playingSound = true;
+		playSound("monster-death");
+	}
+	const redFilter = new ColorMatrixFilter();
+	redFilter.greyscale(0.5, false);
+	redFilter.brightness(1.5, false);
+	redFilter.tint(0xff0000, false);
+	character.filters = [redFilter];
+
+	await animateSmoothsprite(
+		character,
+		character.x,
+		ground + character.height
+	);
+
+	app.ticker.remove(tickers[character.uid]);
+	delete tickers[character.uid];
+
+	setTimeout(() => {
+		app.stage.removeChild(character);
+	}, 1000);
 }
