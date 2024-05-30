@@ -9,7 +9,38 @@ export function removeMenu() {
 }
 
 export function setMenuActions() {
-	document.getElementById("play-button")?.addEventListener("click", () => {
+	setTimeout(() => {
+		document
+			.getElementById("play-button")
+			?.addEventListener("click", () => {
+				removeMenu();
+				removeListeners()
+				removeBackground();
+				loader();
+				openModal();
+				CreateGame();
+			});
+
+		document
+			.getElementById("settings-button")
+			?.addEventListener("click", () => {
+				settings();
+				removeListeners()
+				openModal();
+			});
+
+		document
+			.getElementById("credits-button")
+			?.addEventListener("click", () => {
+				credits();
+				removeListeners()
+				openModal();
+			});
+	}, 500);
+}
+
+function removeListeners() {
+	document.getElementById("play-button")?.removeEventListener("click", () => {
 		removeMenu();
 		removeBackground();
 		loader();
@@ -19,15 +50,17 @@ export function setMenuActions() {
 
 	document
 		.getElementById("settings-button")
-		?.addEventListener("click", () => {
+		?.removeEventListener("click", () => {
 			settings();
 			openModal();
 		});
 
-	document.getElementById("credits-button")?.addEventListener("click", () => {
-		credits();
-		openModal();
-	});
+	document
+		.getElementById("credits-button")
+		?.removeEventListener("click", () => {
+			credits();
+			openModal();
+		});
 }
 
 export function ShowMenu() {

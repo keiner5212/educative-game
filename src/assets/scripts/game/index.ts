@@ -92,6 +92,7 @@ export async function CreateGame() {
 	esceneBg.filters = [filmSepiaFilter, noiseFilter];
 	app.ticker.add(SepiaOldFilter);
 	app.ticker.add(animateNoise);
+	
 	closeModal();
 
 	const character = await CreateSprite(
