@@ -3,7 +3,9 @@ import {
 	WspriteImages,
 	backgroundImg,
 	dialogImg,
+	emptyHeart,
 	enemygif,
+	filledHeart,
 	filmSepiaFilter,
 	groundTile,
 	mangif,
@@ -12,10 +14,13 @@ import {
 	slimeenemySprites,
 	spriteImages,
 	subgroundTile,
+	subwaterImg1,
+	waterImg1,
 	womangif,
 } from "./resources";
 import { loadContent } from "./motor/utils";
 import {
+	Characterphysics,
 	SetBackgroundRepeating,
 	SetDoubleGround,
 	physics,
@@ -24,6 +29,7 @@ import {
 import {
 	CreateSprite,
 	characterMovement,
+	createLifesContainer,
 	enemyMovement,
 } from "./motor/characters";
 import {
@@ -39,6 +45,7 @@ import { Constants } from "../constants";
 import { closeModal } from "../utils";
 import { Application, Container } from "pixi.js";
 import { createButtonAt, showDialog } from "./motor/dialog";
+import { wallRight } from "./motor/variables";
 
 const esceneBg = new Container();
 export async function CreateGame() {
@@ -55,13 +62,33 @@ export async function CreateGame() {
 		...womangif,
 		...enemygif,
 		dialogImg,
+		subwaterImg1,
+		waterImg1,
+		filledHeart,
+		emptyHeart,
 	]);
 
 	const app = await setupApp(60, window.innerWidth, window.innerHeight);
 
 	app.stage.addChild(esceneBg);
 	await SetBackgroundRepeating(esceneBg, backgroundImg);
-	await SetDoubleGround(esceneBg, [subgroundTile, groundTile], 2, 10);
+	await SetDoubleGround(
+		esceneBg,
+		[subgroundTile, groundTile],
+		2,
+		10,
+		0,
+		wallRight - 600,
+		true
+	);
+	await SetDoubleGround(
+		esceneBg,
+		[subwaterImg1, waterImg1],
+		2,
+		15,
+		wallRight - 595
+	);
+
 	esceneBg.filters = [filmSepiaFilter, noiseFilter];
 	app.ticker.add(SepiaOldFilter);
 	app.ticker.add(animateNoise);
@@ -189,13 +216,24 @@ async function scene3(app: Application) {
 }
 
 async function createPlayable(app: Application) {
-	const character = await CreateSprite(spriteImages, 100, Constants.GROUND);
+	const character = await CreateSprite(
+		spriteImages,
+		Constants.CH_INITIAL_X,
+		Constants.CH_INITIAL_Y,
+		undefined,
+		undefined,
+		true
+	);
+
 	setJumpingAnimations(character, app, JspriteImages);
 	setQuietAnimations(character, app, spriteImages, 200);
 	setMovingAnimations(character, app, WspriteImages);
 	characterMovement(character, app, 1, Constants.GROUND);
-	physics(character, app, Constants.GROUND);
+	Characterphysics(character, app, Constants.GROUND);
 	app.stage.addChild(character);
+	const heartsUI = await createLifesContainer(Constants.INITIAL_LIFES, app);
+
+	app.stage.addChild(heartsUI);
 
 	const slime = await CreateSprite(
 		slimeenemySprites,
@@ -214,6 +252,5 @@ async function createPlayable(app: Application) {
 		Constants.GROUND + 15
 	);
 	physics(slime, app, Constants.GROUND + 15);
-
 	app.stage.addChild(slime);
 }

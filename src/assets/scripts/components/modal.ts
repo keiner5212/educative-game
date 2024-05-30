@@ -1,4 +1,4 @@
-import { ShowMenu } from "../game/menu";
+import { setMenuActions } from "../game/menu";
 import { playMusic, setVolume, stopMusic } from "../game/motor/music";
 import { accept, closeModal, closeModalXButton, decline } from "../utils";
 import "../../styles/loader.css";
@@ -11,7 +11,9 @@ export function createModal(
 	acceptF: any,
 	declineF: any
 ) {
-	document.body.innerHTML += `
+	const wraper = document.getElementById("root-wraper");
+	if (!wraper) return;
+	wraper.innerHTML += `
         <div class="modal">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -48,7 +50,9 @@ export function createModal(
 }
 
 export function settings() {
-	document.body.innerHTML += `
+	const wraper = document.getElementById("root-wraper");
+	if (!wraper) return;
+	wraper.innerHTML += `
         <div class="modal">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -100,7 +104,7 @@ export function settings() {
 
 	document.getElementById("close-modal")?.addEventListener("click", () => {
 		closeModal();
-		ShowMenu();
+		setMenuActions();
 	});
 
 	document
@@ -114,14 +118,14 @@ export function settings() {
 			}
 
 			closeModal();
-			ShowMenu();
+			setMenuActions();
 		});
 
 	document
 		.getElementById("modal-decline-button")
 		?.addEventListener("click", () => {
 			closeModal();
-			ShowMenu();
+			setMenuActions();
 		});
 
 	const quitVolumeButton = document.getElementById("toggle-volume-button");
@@ -142,7 +146,9 @@ export function settings() {
 }
 
 export function credits() {
-	document.body.innerHTML += `
+	const wraper = document.getElementById("root-wraper");
+	if (!wraper) return;
+	wraper.innerHTML += `
     <div class="modal">
         <div class="modal-background"></div>
         <div class="modal-card">
@@ -178,24 +184,26 @@ export function credits() {
 		.getElementById("modal-decline-button")
 		?.addEventListener("click", () => {
 			closeModal();
-			ShowMenu();
+			setMenuActions();
 		});
 
 	document.getElementById("close-modal")?.addEventListener("click", () => {
 		closeModal();
-		ShowMenu();
+		setMenuActions();
 	});
 
 	document
 		.getElementById("modal-accept-button")
 		?.addEventListener("click", () => {
 			closeModal();
-			ShowMenu();
+			setMenuActions();
 		});
 }
 
 export function loader() {
-	document.body.innerHTML += `
+	const wraper = document.getElementById("root-wraper");
+	if (!wraper) return;
+	wraper.innerHTML += `
 	<div class="modal">
 		<div class="modal-background">
 			<div class="spinner-container">

@@ -1,5 +1,20 @@
 import { Application, Assets, Container, Sprite } from "pixi.js";
-import { ground, speedX, speedY, wallLeft, wallRight } from "./variables";
+import {
+	fallingInterval,
+	ground,
+	isTouchingGround,
+	speedX,
+	speedY,
+	wallLeft,
+	wallRight,
+	yInterval,
+} from "./variables";
+import { groundCollector } from "./spriteCollectors";
+import { startFall } from "./movement";
+import { Constants } from "../../constants";
+import { createLifesContainer } from "./characters";
+import { createModal } from "../../components/modal";
+import { openModal } from "../../utils";
 
 export async function setupApp(
 	fps: number,
@@ -25,23 +40,126 @@ export async function SetBackground(app: Application, b_img: string) {
 	app.stage.addChild(background);
 }
 
+let lifesLeft: number = Constants.INITIAL_LIFES;
+let loosingLife = false;
+
+export function Characterphysics(
+	character: Sprite,
+	app: Application,
+	characterGround: number = ground - 1
+) {
+	app.ticker.add(async () => {
+		const isfalling =
+			!isTouchingGround[character.uid] && !yInterval[character.uid];
+
+		if (character.y < characterGround && speedY[character.uid] !== 0) {
+			if (character.y + speedY[character.uid] < characterGround) {
+				character.y += speedY[character.uid];
+			} else {
+				clearInterval(yInterval[character.uid]);
+				delete yInterval[character.uid];
+				character.y = characterGround;
+				speedY[character.uid] = 0;
+			}
+		}
+
+		if (
+			fallingInterval[character.uid] &&
+			character.y > characterGround + 200 &&
+			!loosingLife
+		) {
+			loosingLife = true;
+			setTimeout(async () => {
+				character.x = Constants.CH_INITIAL_X;
+				character.y = Constants.CH_INITIAL_Y;
+
+				const heartsUI = await createLifesContainer(--lifesLeft, app);
+
+				clearInterval(fallingInterval[character.uid]);
+				delete fallingInterval[character.uid];
+
+				app.stage.addChild(heartsUI);
+
+				if (lifesLeft === 0) {
+					createModal(
+						"Game Over",
+						"You lost",
+						"Play Again",
+						"Decline",
+						async () => {
+							lifesLeft = Constants.INITIAL_LIFES;
+							const heartsUI = await createLifesContainer(
+								lifesLeft,
+								app
+							);
+							app.stage.addChild(heartsUI);
+						},
+						() => {
+							location.reload();
+						}
+					);
+					openModal();
+				}
+
+				loosingLife = false;
+			}, 100);
+		}
+
+		if (isfalling) {
+			startFall(character);
+		} else {
+			clearInterval(fallingInterval[character.uid]);
+			delete fallingInterval[character.uid];
+		}
+
+		if (
+			fallingInterval[character.uid] &&
+			!isTouchingGround[character.uid] &&
+			!yInterval[character.uid]
+		) {
+			character.y += speedY[character.uid];
+		}
+
+		if (
+			character.y > characterGround &&
+			!fallingInterval[character.uid] &&
+			!yInterval[character.uid]
+		) {
+			character.y = characterGround;
+			speedY[character.uid] = 0;
+		}
+
+		if (
+			character.x + speedX[character.uid] < wallRight &&
+			character.x + speedX[character.uid] > wallLeft
+		) {
+			character.x += speedX[character.uid];
+		} else {
+			speedX[character.uid] = 0;
+		}
+	});
+}
+
 export function physics(
 	character: Sprite,
 	app: Application,
 	characterGround: number = ground - 1
 ) {
 	app.ticker.add(() => {
-		// console.log("speedY: ", speedY, "character.y: ", character.y, "ground: ", characterGround);
 		if (character.y <= characterGround && speedY[character.uid] !== 0) {
-			character.y += speedY[character.uid];
+			if (character.y + speedY[character.uid] < characterGround) {
+				character.y += speedY[character.uid];
+			} else {
+				character.y = characterGround;
+				speedY[character.uid] = 0;
+			}
 		}
 
-		if (character.y > characterGround) {
+		if (character.y > characterGround && speedY[character.uid] !== 0) {
 			character.y = characterGround;
 			speedY[character.uid] = 0;
 		}
 
-		// console.log("speedX: ", speedX, "character.x: ", character.x, "app.screen.width: ", app.screen.width);
 		if (
 			character.x + speedX[character.uid] < wallRight &&
 			character.x + speedX[character.uid] > wallLeft
@@ -82,7 +200,10 @@ export async function SetGround(
 	c: Container<any>,
 	g_img: string,
 	ground?: number,
-	scaleFactor: number = 2
+	scaleFactor: number = 2,
+	startx: number = wallLeft,
+	endx: number = wallRight,
+	collectSprites: boolean = false
 ) {
 	const texture = await Assets.get(g_img);
 
@@ -90,16 +211,20 @@ export async function SetGround(
 
 	const textureWidth = texture.width;
 	const textureHeight = texture.height;
-	const screenWidth = window.innerWidth;
+	const screenWidth = endx - startx;
 
 	const groundH = (ground ?? c.height) - textureHeight * scaleFactor;
 
-	const repeatCount = Math.ceil(screenWidth / textureWidth);
+	const repeatCount = Math.ceil(screenWidth / (textureWidth * scaleFactor));
 
 	for (let i = 0; i < repeatCount; i++) {
 		const sprite = new Sprite(texture);
 
-		sprite.x = i * textureWidth * scaleFactor;
+		if (collectSprites) {
+			groundCollector.push(sprite);
+		}
+
+		sprite.x = startx + i * textureWidth * scaleFactor;
 		sprite.y = groundH;
 		sprite.width = textureWidth * scaleFactor;
 		sprite.height = textureHeight * scaleFactor;
@@ -114,13 +239,26 @@ export async function SetDoubleGround(
 	c: Container<any>,
 	g_imgs: string[],
 	scaleFactor: number = 2,
-	heightReducer: number = 0
+	heightReducer: number = 0,
+	startx: number = wallLeft,
+	endx: number = wallRight,
+	collectSprites: boolean = false
 ) {
 	const subgH = await SetGround(
 		c,
 		g_imgs[0],
 		ground + heightReducer,
-		scaleFactor
+		scaleFactor,
+		startx,
+		endx
 	);
-	await SetGround(c, g_imgs[1], ground - subgH + heightReducer, scaleFactor);
+	await SetGround(
+		c,
+		g_imgs[1],
+		ground - subgH + heightReducer,
+		scaleFactor,
+		startx,
+		endx,
+		collectSprites
+	);
 }

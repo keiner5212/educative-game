@@ -3,6 +3,11 @@ import backgroundImg1 from "../../img/world/bg/bg-3.png";
 import groundTile1 from "../../img/world/Tiles/tile_0002.png";
 import subgroundTile1 from "../../img/world/Tiles/tile_0004.png";
 import dialogIMG from "../../img/dialog.png";
+import subwaterImg from "../../img/world/Tiles/tile_0073.png";
+import waterImg from "../../img/world/Tiles/tile_0053.png";
+import filledHeart1 from "../../img/world/Tiles/tile_0044.png";
+import emptyHeart1 from "../../img/world/Tiles/tile_0046.png";
+
 
 // enemySprites
 import slimeenemyImg1 from "../../img/personajes/mounstros/slime/slime1.png";
@@ -53,6 +58,10 @@ export const backgroundImg = backgroundImg1;
 export const groundTile = groundTile1;
 export const subgroundTile = subgroundTile1;
 export const dialogImg = dialogIMG;
+export const subwaterImg1 = subwaterImg;
+export const waterImg1 = waterImg;
+export const filledHeart = filledHeart1;
+export const emptyHeart = emptyHeart1;
 
 // character sprites
 export const spriteImages = [
@@ -85,6 +94,7 @@ export const filmSepiaFilter = new OldFilmFilter({
 export const noiseFilter = new NoiseFilter();
 
 
+// riddles
 export const riddles = [
 	{
 		question:

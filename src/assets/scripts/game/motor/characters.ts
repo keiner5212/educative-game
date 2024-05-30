@@ -1,8 +1,16 @@
-import { Application, Assets, Sprite } from "pixi.js";
+import {
+	Application,
+	Assets,
+	Container,
+	Sprite,
+	Text,
+	TextStyle,
+} from "pixi.js";
 import { updateCharacterSprite } from "./animations";
 import {
 	JumperInterval,
 	ground,
+	isTouchingGround,
 	keys,
 	speedX,
 	speedY,
@@ -10,6 +18,7 @@ import {
 	wallRight,
 	xIntervalLeft,
 	xIntervalRight,
+	yInterval,
 } from "./variables";
 import {
 	aleatoryJump,
@@ -18,25 +27,40 @@ import {
 	startMovementRight,
 } from "./movement";
 import { Constants } from "../../constants";
+import { groundCollector } from "./spriteCollectors";
+import { DetectColision } from "./utils";
+import { emptyHeart, filledHeart } from "../resources";
 
 export async function CreateSprite(
 	initialQuietSprites: string[],
 	x?: number,
 	y?: number,
 	height?: number,
-	width?: number
+	width?: number,
+	controlled?: boolean
 ) {
 	const texture = await Assets.get(initialQuietSprites[0]);
 	const character = new Sprite(texture);
-	character.anchor.x = 0.5;
+	character.anchor.set(0.5);
 	texture.source.scaleMode = "nearest";
 	character.width = width ?? Constants.CHARACTER_WIDTH;
 	character.height = height ?? Constants.CHARACTER_HEIGHT;
 	character.x = x ?? window.innerWidth / 2;
 	character.y = y ?? ground - 1;
-	speedY[character.uid] = 0;
+	speedY[character.uid] = Constants.GRAVITY*3;
 	speedX[character.uid] = 0;
 	updateCharacterSprite(character, initialQuietSprites, "quiet");
+
+	if (controlled) {
+		yInterval[character.uid] = 1;
+		setInterval(() => {
+			const isTouching = groundCollector.some((c) =>
+				DetectColision(character, c, 5, 15)
+			);
+			isTouchingGround[character.uid] = isTouching;
+		}, 40);
+	}
+
 	return character;
 }
 
@@ -146,4 +170,58 @@ export function enemyMovement(
 			}
 		}
 	});
+}
+
+let lifeContainer: Container;
+
+export async function createLifesContainer(
+	lifes_left: number,
+	app: Application
+) {
+	if (lifeContainer) {
+		app.stage.removeChild(lifeContainer);
+	}
+
+	const container = new Container();
+
+	const textStyle = new TextStyle({
+		fontFamily: Constants.FONT_FAMILY,
+		fontSize: 24,
+		fill: "black",
+	});
+	const lifesText = new Text("Lifes", textStyle);
+	lifesText.anchor.set(0.5);
+	lifesText.x = 0;
+	lifesText.y = 0;
+	container.addChild(lifesText);
+
+	const heartTexture = await Assets.get(filledHeart);
+	const heartemptyTexture = await Assets.get(emptyHeart);
+	heartTexture.source.scaleMode = "nearest";
+	const heartSize = Constants.HEART_SIZE;
+
+	for (let i = 0; i < lifes_left; i++) {
+		const heart = new Sprite(heartTexture);
+		heart.width = heartSize;
+		heart.height = heartSize;
+		heart.x = i * (heartSize + 10);
+		heart.y = heartSize * 2;
+		container.addChild(heart);
+	}
+
+	for (let i = lifes_left; i < Constants.INITIAL_LIFES; i++) {
+		const emptyHeart = new Sprite(heartemptyTexture);
+		emptyHeart.width = heartSize;
+		emptyHeart.height = heartSize;
+		emptyHeart.x = i * (heartSize + 10);
+		emptyHeart.y = heartSize * 2;
+		container.addChild(emptyHeart);
+	}
+
+	container.x = wallRight - 6 * Constants.HEART_SIZE;
+	container.y = Constants.HEART_SIZE * 2;
+	container.width = 6 * Constants.HEART_SIZE;
+
+	lifeContainer = container;
+	return container;
 }

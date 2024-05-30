@@ -1,6 +1,7 @@
 import { Sprite } from "pixi.js";
 import { Constants } from "../../constants";
 import {
+	fallingInterval,
 	speedX,
 	speedY,
 	wallLeft,
@@ -53,13 +54,17 @@ export function startMovementLeft(
 export function startJump(character: Sprite, ground: number) {
 	if (!yInterval[character.uid]) {
 		speedY[character.uid] = -Constants.MAX_SPEED_Y;
+		character.y = ground - 6;
 		yInterval[character.uid] = setInterval(() => {
-			if (character.y < ground) {
-				speedY[character.uid] += Constants.GRAVITY;
-			} else {
-				clearInterval(yInterval[character.uid]);
-				delete yInterval[character.uid];
-			}
+			speedY[character.uid] += Constants.GRAVITY;
+		}, Constants.MOVEMENT_UPDATE);
+	}
+}
+
+export function startFall(character: Sprite) {
+	if (!fallingInterval[character.uid]) {
+		fallingInterval[character.uid] = setInterval(() => {
+			speedY[character.uid] += Constants.GRAVITY;
 		}, Constants.MOVEMENT_UPDATE);
 	}
 }

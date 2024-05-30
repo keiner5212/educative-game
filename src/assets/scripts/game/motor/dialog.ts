@@ -1,5 +1,6 @@
 import { Sprite, Text, Container, Assets, TextStyle } from "pixi.js";
 import "./dialog.css";
+import { Constants } from "../../constants";
 
 export async function showDialog(
 	dialogSprite: string,
@@ -19,7 +20,7 @@ export async function showDialog(
 	card.height = height;
 
 	const textStyle = new TextStyle({
-		fontFamily: "Georgia",
+		fontFamily: Constants.FONT_FAMILY,
 		fontSize: 24,
 		fill: "black",
 		wordWrap: true,
