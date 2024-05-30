@@ -7,9 +7,11 @@ import {
 	enemygif,
 	filledHeart,
 	filmSepiaFilter,
+	finalSceneImg1,
 	groundTile,
 	mangif,
 	noiseFilter,
+	platformImg,
 	slimeenemyJSprites,
 	slimeenemySprites,
 	spriteImages,
@@ -23,6 +25,7 @@ import {
 	Characterphysics,
 	SetBackgroundRepeating,
 	SetDoubleGround,
+	SetGround,
 	physics,
 	setupApp,
 } from "./motor/app";
@@ -46,6 +49,7 @@ import { closeModal } from "../utils";
 import { Application, Container } from "pixi.js";
 import { createButtonAt, showDialog } from "./motor/dialog";
 import { wallRight } from "./motor/variables";
+import { platformCollector } from "./motor/spriteCollectors";
 
 const esceneBg = new Container();
 export async function CreateGame() {
@@ -66,6 +70,8 @@ export async function CreateGame() {
 		waterImg1,
 		filledHeart,
 		emptyHeart,
+		finalSceneImg1,
+		platformImg,
 	]);
 
 	const app = await setupApp(60, window.innerWidth, window.innerHeight);
@@ -263,4 +269,15 @@ async function createPlayable(app: Application) {
 	);
 	physics(slime, app, Constants.GROUND + 15);
 	app.stage.addChild(slime);
+
+	await SetGround(
+		esceneBg,
+		platformImg,
+		platformCollector,
+		800,
+		2,
+		400,
+		600,
+		true
+	);
 }

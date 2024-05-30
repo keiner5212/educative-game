@@ -24,7 +24,7 @@ export async function showDialog(
 		fontSize: 24,
 		fill: "black",
 		wordWrap: true,
-		wordWrapWidth: width - 20,
+		wordWrapWidth: width - 200,
 	});
 
 	const dialogText = new Text("", textStyle);
@@ -86,10 +86,10 @@ export function createDialogInputForm(
 	wraper.innerHTML += `
     <div id="dialog-button" style="top: ${y}px; left: ${x}px;">
         <input class="dialog-button button" type="text" id="dialog-input" placeholder="Your answer..." >
-        <button class="dialog-button">${buttonText}</button>
+        <button class="dialog-button-answer button">${buttonText}</button>
     </div>`;
 
-	document.querySelector(".dialog-button")?.addEventListener("click", () => {
+	document.querySelector(".dialog-button-answer")?.addEventListener("click", () => {
 		action(
 			(document.querySelector("#dialog-input") as HTMLInputElement).value
 		);

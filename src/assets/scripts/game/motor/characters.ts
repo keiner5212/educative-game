@@ -12,6 +12,7 @@ import {
 	ground,
 	isTouchingGround,
 	keys,
+	onRiddleDialog,
 	speedX,
 	speedY,
 	tickers,
@@ -29,12 +30,13 @@ import {
 } from "./movement";
 import { Constants } from "../../constants";
 import { enemyCollector, groundCollector } from "./spriteCollectors";
-import { DetectColision, DetectJump } from "./utils";
-import { emptyHeart, filledHeart, redFilter } from "../resources";
+import { DetectColision, DetectJump, getRamdomRiddle } from "./utils";
+import { dialogImg, emptyHeart, filledHeart, redFilter } from "../resources";
 import { playSound } from "./music";
 import { lifesLeft } from "./app";
 import { createModal } from "../../components/modal";
 import { openModal } from "../../utils";
+import { createDialogInputForm, showDialog } from "./dialog";
 
 export async function CreateSprite(
 	initialQuietSprites: string[],
@@ -127,6 +129,9 @@ export function characterMovement(
 	});
 
 	function updateCharacterMovement(character: Sprite) {
+		if (onRiddleDialog[character.uid]) {
+			return;
+		}
 		if (
 			(keys["ArrowRight"] || keys["d"]) &&
 			!(keys["ArrowLeft"] || keys["a"])
@@ -201,8 +206,6 @@ export function enemyMovement(
 				}
 			}
 		} else {
-			console.log(character.x > startx);
-			console.log(character.x - startx);
 			if (character.x <= endx && !riggthTouched) {
 				if (endx - character.x < 5) {
 					riggthTouched = true;
@@ -325,44 +328,63 @@ export async function animateDeathPlayer(character: Sprite, app: Application) {
 		return;
 	}
 	loosingLife = true;
-
+	onRiddleDialog[character.uid] = true;
 	playSound("player-death");
 
+	const riddle = getRamdomRiddle();
+	const dialog1 = await showDialog(
+		dialogImg,
+		riddle.question,
+		window.innerWidth / 2,
+		window.innerHeight / 2 + 250
+	);
 	character.filters = [redFilter];
+	character.x = Constants.CH_INITIAL_X;
+	character.y = Constants.CH_INITIAL_Y;
+	createDialogInputForm(
+		window.innerWidth / 2,
+		window.innerHeight / 2 + 350,
+		"Answer",
+		async (value) => {
+			onRiddleDialog[character.uid] = false;
+			app.stage.removeChild(dialog1);
+			if (value === riddle.answer) {
+				loosingLife = false;
+				character.filters = [];
+			} else {
+				const heartsUI = await createLifesContainer(
+					--lifesLeft[character.uid],
+					app
+				);
 
-	setTimeout(async () => {
-		const heartsUI = await createLifesContainer(
-			--lifesLeft[character.uid],
-			app
-		);
+				app.stage.addChild(heartsUI);
 
-		app.stage.addChild(heartsUI);
-
-		if (lifesLeft[character.uid] <= 0) {
-			createModal(
-				"Game Over",
-				"You lost",
-				"Play Again",
-				"Decline",
-				async () => {
-					lifesLeft[character.uid] = Constants.INITIAL_LIFES;
-					const heartsUI = await createLifesContainer(
-						lifesLeft[character.uid],
-						app
+				if (lifesLeft[character.uid] <= 0) {
+					createModal(
+						"Game Over",
+						"You lost",
+						"Play Again",
+						"Decline",
+						async () => {
+							lifesLeft[character.uid] = Constants.INITIAL_LIFES;
+							const heartsUI = await createLifesContainer(
+								lifesLeft[character.uid],
+								app
+							);
+							app.stage.addChild(heartsUI);
+						},
+						() => {
+							location.reload();
+						}
 					);
-					app.stage.addChild(heartsUI);
-				},
-				() => {
-					location.reload();
+					openModal();
 				}
-			);
-			openModal();
+				character.filters = [];
+
+				loosingLife = false;
+			}
 		}
+	);
 
-		character.x = Constants.CH_INITIAL_X;
-		character.y = Constants.CH_INITIAL_Y;
-		character.filters = [];
-
-		loosingLife = false;
-	}, 1000);
+	app.stage.addChild(dialog1);
 }

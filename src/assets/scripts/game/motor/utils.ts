@@ -1,5 +1,6 @@
 import { Assets, Sprite } from "pixi.js";
 import { speedY } from "./variables";
+import { riddles } from "../resources";
 
 export async function loadContent(spriteImages: string[]) {
 	const sprites = [];
@@ -45,4 +46,8 @@ export function DetectJump(spriteA: Sprite, spriteB: Sprite): boolean {
 	const isCloseEnoughX = Math.abs(spriteA.x - spriteB.x) <= maxDistanceX;
 
 	return isAbove && isCloseEnoughX && speedY[spriteA.uid] > 0;
+}
+
+export function getRamdomRiddle() {
+	return riddles[Math.floor(Math.random() * riddles.length)];
 }

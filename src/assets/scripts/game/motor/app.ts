@@ -56,7 +56,6 @@ export function Characterphysics(
 			!isTouchingGround[character.uid] && !yInterval[character.uid];
 
 		if (character.y < characterGround && speedY[character.uid] !== 0) {
-			
 			if (character.y + speedY[character.uid] < characterGround) {
 				character.y += speedY[character.uid];
 			} else {
@@ -213,6 +212,7 @@ export async function SetBackgroundRepeating(c: Container<any>, b_img: string) {
 export async function SetGround(
 	c: Container<any>,
 	g_img: string,
+	Collector: any[],
 	ground?: number,
 	scaleFactor: number = 2,
 	startx: number = wallLeft,
@@ -235,7 +235,7 @@ export async function SetGround(
 		const sprite = new Sprite(texture);
 
 		if (collectSprites) {
-			groundCollector.push(sprite);
+			Collector.push(sprite);
 		}
 
 		sprite.x = startx + i * textureWidth * scaleFactor;
@@ -261,6 +261,7 @@ export async function SetDoubleGround(
 	const subgH = await SetGround(
 		c,
 		g_imgs[0],
+		[],
 		ground + heightReducer,
 		scaleFactor,
 		startx,
@@ -269,6 +270,7 @@ export async function SetDoubleGround(
 	await SetGround(
 		c,
 		g_imgs[1],
+		groundCollector,
 		ground - subgH + heightReducer,
 		scaleFactor,
 		startx,

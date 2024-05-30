@@ -7,6 +7,8 @@ import subwaterImg from "../../img/world/Tiles/tile_0073.png";
 import waterImg from "../../img/world/Tiles/tile_0053.png";
 import filledHeart1 from "../../img/world/Tiles/tile_0044.png";
 import emptyHeart1 from "../../img/world/Tiles/tile_0046.png";
+import finalSceneImg from "../../img/fondo para escena final.jpg";
+import platformImg1 from "../../img/world/Tiles/tile_0029.png";
 
 
 // enemySprites
@@ -62,6 +64,8 @@ export const subwaterImg1 = subwaterImg;
 export const waterImg1 = waterImg;
 export const filledHeart = filledHeart1;
 export const emptyHeart = emptyHeart1;
+export const finalSceneImg1 = finalSceneImg;
+export const platformImg = platformImg1;
 
 // character sprites
 export const spriteImages = [
