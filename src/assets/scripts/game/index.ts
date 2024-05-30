@@ -452,7 +452,7 @@ async function scinematicEnd(app: Application) {
 		300,
 		300
 	);
-	
+
 	character.scale.x = -1;
 	character.width = 300;
 
@@ -469,7 +469,7 @@ async function scinematicEnd(app: Application) {
 	const character3 = await CreateSprite(
 		villain,
 		200,
-		window.innerHeight / 2 -150,
+		window.innerHeight / 2 - 150,
 		300,
 		300
 	);
@@ -477,4 +477,74 @@ async function scinematicEnd(app: Application) {
 	app.stage.addChild(character);
 	app.stage.addChild(character2);
 	app.stage.addChild(character3);
+
+	const dialog1 = await showDialog(
+		dialogImg,
+		"CONDE: ¿Con usted  ha logrado superar todos los obstáculos y ayudantes malvados que he puesto exclusivamente para usted con tal de recuperar a su amada?",
+		window.innerWidth / 2,
+		window.innerHeight / 2 + 250
+	);
+
+	app.stage.addChild(dialog1);
+	createButtonAt(
+		window.innerWidth / 2,
+		window.innerHeight / 2 + 350,
+		"Continuar",
+		async () => {
+			app.stage.removeChild(dialog1);
+
+			const dialog2 = await showDialog(
+				dialogImg,
+				"DAVID: Si, todo lo superé por amor..(no hizo mucho igual) ",
+				window.innerWidth / 2,
+				window.innerHeight / 2 + 250
+			);
+
+			app.stage.addChild(dialog2);
+			createButtonAt(
+				window.innerWidth / 2,
+				window.innerHeight / 2 + 350,
+				"Continuar",
+				async () => {
+					app.stage.removeChild(dialog2);
+
+					const dialog3 = await showDialog(
+						dialogImg,
+						"DAVID: Ahora devuélveme a mi chica!",
+						window.innerWidth / 2,
+						window.innerHeight / 2 + 250
+					);
+
+					app.stage.addChild(dialog3);
+					createButtonAt(
+						window.innerWidth / 2,
+						window.innerHeight / 2 + 350,
+						"Continuar",
+						async () => {
+							app.stage.removeChild(dialog3);
+							const dialog4 = await showDialog(
+								dialogImg,
+								"CONDE: Sabes chico? eres valiente y de verdad que alguien fuerte, admiro tu fortaleza.. al final del dia.. yo buscaba algo que no podría tener de esta manera…",
+								window.innerWidth / 2,
+								window.innerHeight / 2 + 250
+							);
+
+							app.stage.addChild(dialog4);
+							createButtonAt(
+								window.innerWidth / 2,
+								window.innerHeight / 2 + 350,
+								"Continuar",
+								async () => {
+									app.stage.removeChild(dialog4);
+									setTimeout(() => {
+										location.reload();
+									}, 3000);
+								}
+							);
+						}
+					);
+				}
+			);
+		}
+	);
 }
