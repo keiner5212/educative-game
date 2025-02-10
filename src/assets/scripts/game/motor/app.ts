@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Application, Assets, Container, Sprite } from "pixi.js";
 import {
 	fallingInterval,
@@ -30,6 +31,8 @@ export async function setupApp(
 	app.renderer.resize(width, height);
 	document.body.appendChild(app.canvas);
 	app.canvas.classList.add("game-camvas");
+	app.canvas.width = window.innerWidth;
+
 	return app;
 }
 

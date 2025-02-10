@@ -27,7 +27,7 @@ export async function showDialog(
 		wordWrapWidth: width - 200,
 	});
 
-	const dialogText = new Text("", textStyle);
+	const dialogText = new Text({text: "", style: textStyle});
 	dialogText.anchor.set(0.5);
 	dialogText.x = 0;
 	dialogText.y = 0;
@@ -58,14 +58,16 @@ export async function showDialog(
 
 export function createButtonAt(
 	x: number,
-	y: number,
+	bottomy: number,
 	buttonText: string,
 	action: () => void
 ) {
+	const relativex = (x/window.innerWidth)*100;
+	
 	const wraper = document.getElementById("root-wraper");
 	if (!wraper) return;
 	wraper.innerHTML += `
-    <div id="dialog-button" style="top: ${y}px; left: ${x}px;">
+    <div id="dialog-button" style="bottom: ${bottomy}px; left: ${relativex}%;">
         <button class="dialog-button button">${buttonText}</button>
     </div>`;
 
@@ -77,14 +79,16 @@ export function createButtonAt(
 
 export function createDialogInputForm(
 	x: number,
-	y: number,
+	bottomy: number,
 	buttonText: string,
 	action: (value: string) => void
 ) {
+	const relativex = (x/window.innerWidth)*100;
+	
 	const wraper = document.getElementById("root-wraper");
 	if (!wraper) return;
 	wraper.innerHTML += `
-    <div id="dialog-button" style="top: ${y}px; left: ${x}px;">
+    <div id="dialog-button" style="bottom: ${bottomy}px; left: ${relativex}%;">
         <input class="dialog-button button" type="text" id="dialog-input" placeholder="Your answer..." >
         <button class="dialog-button-answer button">${buttonText}</button>
     </div>`;

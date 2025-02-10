@@ -344,7 +344,7 @@ export async function animateDeathPlayer(character: Sprite, app: Application) {
 	character.y = Constants.CH_INITIAL_Y;
 	createDialogInputForm(
 		window.innerWidth / 2,
-		window.innerHeight / 2 + 350,
+		5,
 		"Answer",
 		async (value) => {
 			onRiddleDialog[character.uid] = false;

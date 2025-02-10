@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	JspriteImages,
 	WspriteImages,
@@ -139,7 +140,7 @@ export async function CreateGame() {
 
 	createButtonAt(
 		window.innerWidth / 2,
-		window.innerHeight / 2 + 350,
+		5,
 		"Continuar",
 		async () => {
 			app.stage.removeChild(dialog1);
@@ -188,7 +189,7 @@ async function scene2(app: Application) {
 
 	createButtonAt(
 		window.innerWidth / 2,
-		window.innerHeight / 2 + 350,
+		5,
 		"Continuar",
 		async () => {
 			app.stage.removeChild(dialog1);
@@ -223,7 +224,7 @@ async function scene3(app: Application) {
 	);
 	createButtonAt(
 		window.innerWidth / 2,
-		window.innerHeight / 2 + 350,
+		5,
 		"Continuar",
 		async () => {
 			app.stage.removeChild(dialog1);
@@ -478,7 +479,7 @@ async function scinematicEnd(app: Application) {
 	app.stage.addChild(dialog1);
 	createButtonAt(
 		window.innerWidth / 2,
-		window.innerHeight / 2 + 350,
+		5,
 		"Continuar",
 		async () => {
 			app.stage.removeChild(dialog1);
@@ -493,7 +494,7 @@ async function scinematicEnd(app: Application) {
 			app.stage.addChild(dialog2);
 			createButtonAt(
 				window.innerWidth / 2,
-				window.innerHeight / 2 + 350,
+				5,
 				"Continuar",
 				async () => {
 					app.stage.removeChild(dialog2);
@@ -508,7 +509,7 @@ async function scinematicEnd(app: Application) {
 					app.stage.addChild(dialog3);
 					createButtonAt(
 						window.innerWidth / 2,
-						window.innerHeight / 2 + 350,
+						5,
 						"Continuar",
 						async () => {
 							app.stage.removeChild(dialog3);
@@ -522,7 +523,7 @@ async function scinematicEnd(app: Application) {
 							app.stage.addChild(dialog4);
 							createButtonAt(
 								window.innerWidth / 2,
-								window.innerHeight / 2 + 350,
+								5,
 								"Continuar",
 								async () => {
 									app.stage.removeChild(dialog4);

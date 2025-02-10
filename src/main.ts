@@ -37,3 +37,11 @@ if (acepted == "true") {
     openModal()
 }
 
+
+window.addEventListener("resize", () => {
+    const wraper = document.getElementById("root-wraper")
+    if (wraper) {
+        wraper.style.height = `${visualViewport?.height}px`
+        wraper.style.width = `${visualViewport?.width}px`
+    }
+})
